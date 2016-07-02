@@ -1,0 +1,16 @@
+[
+{
+  "modid": "dustenricher",
+  "name": "Dust Enricher",
+  "description": "Mod that adds an enriching machine and a lot of recipes to create a variety of dusts from many things. Uses Mekanism.",
+  "version": "willBeEditedAtBuild",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Freemanovec"],
+  "credits": "Aiden C. Brady, for making the awesome Mekanism",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
