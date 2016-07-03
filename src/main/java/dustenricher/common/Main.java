@@ -2,6 +2,7 @@ package dustenricher.common;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dustenricher.blocks.Blank;
@@ -11,6 +12,9 @@ import net.minecraft.block.material.Material;
 @Mod(modid = ResourcesDNM.modid, version = ResourcesDNM.version, canBeDeactivated = false, dependencies = "required-after:Mekanism")
 public class Main {
 	public static final String MODID = "dustenricher";
+	
+	@SidedProxy(clientSide="dustenricher.common.ClientProxy",serverSide="dustenricher.common.ServerProxy")
+	public static CommonProxy proxy;
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event){
