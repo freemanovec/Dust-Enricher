@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dustenricher.blocks.*;
+import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
@@ -34,7 +35,7 @@ public class Main {
 		proxy.postInit(event);
 	}
 	void initBlocks(){
-		Block dustInjectionChamber = new DustInjectionChamber().setBlockName("dustInjectionChamber");
+		Block dustInjectionChamber = new DustInjectionChamber().setBlockName("dustInjectionChamber").setCreativeTab(Mekanism.tabMekanism);
 		
 		GameRegistry.registerBlock(dustInjectionChamber, "dustInjectionChamber");
 	}
