@@ -24,7 +24,7 @@ public class DustInjectionChamberGUI extends GuiContainer{
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		fontRenderer.drawString("Dust Injection Chamber",8,6,4210752);
 		fontRenderer.drawString("Test GUI", 8, 17, 4210752);
-		fontRenderer.drawString("You have to finish this!", 28, 50, 045000255);
+		fontRenderer.drawString("You have to finish this!", 28, 60, 045000255);
 		//draws "Inventory" or your regional equivalent
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize-96 + 2, 4210752);
 	}
