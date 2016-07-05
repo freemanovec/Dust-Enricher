@@ -53,19 +53,24 @@ public class DustInjectionChamber extends BlockContainer{
 	}
 	@Override
 	public IIcon getIcon(int side, int meta){
-		/*if(meta!=0)
-			System.out.println(meta);
-		if(side==meta){
+		if(meta==0&&side==3)
 			return iconFrontOff;
-		}*/
-		if(meta==0&&side==2)
+		if(meta==1&&side==2)
 			return iconFrontOff;
-		if(meta==1&&side==5)
+		if(meta==2&&side==5)
 			return iconFrontOff;
-		if(meta==2&&side==3)
+		if(meta==3&&side==3)
 			return iconFrontOff;
-		if(meta==3&&side==4)
+		if(meta==4&&side==4)
 			return iconFrontOff;
+		if(meta==5&&side==2)
+			return iconFrontOn;
+		if(meta==6&&side==5)
+			return iconFrontOn;
+		if(meta==7&&side==3)
+			return iconFrontOn;
+		if(meta==8&&side==4)
+			return iconFrontOn;
 		return iconCasing;
 	}
 	@Override
@@ -79,7 +84,7 @@ public class DustInjectionChamber extends BlockContainer{
 				Block block = world.getBlock(x, y, z);
 				System.out.println("Block " + block);
 				
-				world.setBlockMetadataWithNotify(x, y, z, side, 1);
+				world.setBlockMetadataWithNotify(x, y, z, side+1, 1);
 				
 				System.out.println(world.getBlockMetadata(x, y, z));
 			}
