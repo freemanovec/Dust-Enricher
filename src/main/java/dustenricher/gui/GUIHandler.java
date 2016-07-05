@@ -13,7 +13,7 @@ public class GUIHandler implements IGuiHandler{
 		TileEntity tileEntity = world.getTileEntity(x, y, z); 
 		if(tileEntity instanceof DustInjectionChamberTE)
 		{ 
-			System.out.println("Opening Container");
+			//System.out.println("Opening Container");
 			return new DustInjectionChamberContainer(player.inventory, (DustInjectionChamberTE) tileEntity);
 		} 
 		return null;
@@ -23,7 +23,7 @@ public class GUIHandler implements IGuiHandler{
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		TileEntity tileEntity = world.getTileEntity(x, y, z);
 		if(tileEntity instanceof DustInjectionChamberTE){
-			System.out.println("Opening GUI");
+			//System.out.println("Opening GUI");
 			return new DustInjectionChamberGUI(player.inventory,(DustInjectionChamberTE)tileEntity);
 		}
 		return null;
