@@ -80,7 +80,7 @@ public class DustInjectionChamber extends BlockContainer{
 				DustInjectionChamberTE tileEntity = (DustInjectionChamberTE) world.getTileEntity(x, y, z);
 				int side = MathHelper.floor_double((entityliving.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
 				System.out.println("Side is " + side);
-				tileEntity.setFacing(side);
+				tileEntity.setFacing(side+1);
 				Block block = world.getBlock(x, y, z);
 				System.out.println("Block " + block);
 				

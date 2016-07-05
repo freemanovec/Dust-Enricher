@@ -1,5 +1,6 @@
 package dustenricher.tileentities;
 
+import mekanism.api.IConfigurable;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,16 +11,49 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory{
+public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable{
 
 	public void setFacing(int val){
 		facing = val;
 	}
-	int facing = 0;
+	int facing = 1;
 	
 	private ItemStack[] inv;
+	
+	boolean metastateActive = false;
+	public void setMetastate(boolean active){
+		if(active){
+			if(facing<5){
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 1);
+				System.out.println("Set active!");
+				metastateActive = true;
+			}
+		}else{
+			System.out.println(facing);
+			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>4){
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 1);
+				System.out.println("Set inactive!");
+				metastateActive = false;
+			}
+		}
+	}
+	
 	public DustInjectionChamberTE(){
 		inv = new ItemStack[9];
+	}
+	boolean setTo = false;
+	@Override
+	public boolean onSneakRightClick(EntityPlayer player, int side) {
+		setTo = !setTo;
+		setMetastate(setTo);
+		System.out.println("Setting active to " + setTo);
+		return true;
+	}
+
+	@Override
+	public boolean onRightClick(EntityPlayer player, int side) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	public void onItemsChanged(){
@@ -102,4 +136,5 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory{
 	public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
 		return true;
 	}
+
 }
