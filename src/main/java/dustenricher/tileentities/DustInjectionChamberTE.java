@@ -26,6 +26,28 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	boolean metastateActive = false;
 	
+	private double energy_max = 1500000d;
+	public double getMaxEnergy(){
+		return energy_max;
+	}
+	public double getEnergy(){
+		return energy_internal;
+	}
+	public void setEnergy(double val){
+		if(val>energy_max)
+			val = energy_max;
+		energy_internal = val;
+	}
+	private double energy_internal = 1000000d;
+	
+	@Override
+	public void updateEntity(){
+		setEnergy(getEnergy()+10000);
+		if(getEnergy()==getMaxEnergy())
+			setEnergy(0);
+		System.out.println("Energy is now " + getEnergy());
+	}
+	
 	public void setMetastate(boolean active){
 		if(active){
 			if(facing<5){
@@ -48,12 +70,14 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.readFromNBT(nbt);
 		metastateActive = nbt.getBoolean("metastateActive");
 		setTo = nbt.getBoolean("setTo");
+		energy_internal = nbt.getDouble("energy_internal");
 	}
 	@Override
 	public void writeToNBT(NBTTagCompound nbt){
 		super.writeToNBT(nbt);
 		nbt.setBoolean("metastateActive", metastateActive);
 		nbt.setBoolean("setTo", setTo);
+		nbt.setDouble("energy_internal", energy_internal);
 	}
 	
 	public DustInjectionChamberTE(){

@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -24,26 +25,34 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 		super(new DustInjectionChamberContainer(inventoryPlayer, te));
 		tileEntity = te;
 		//guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
+		guiElements.add(new GUIPowerBar(this,tileEntity,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
 	}
 	
 	@Override
-	protected void drawGuiContainerForegroundLayer(int par1,int par2){
-		//draw text and stuff here
+	protected void drawGuiContainerForegroundLayer(int mouseX,int mouseY){
 		//the parameters for drawString are: string, x, y, color
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		fontRenderer.drawString("Dust Injection Chamber",30,6,4210752);
-		fontRenderer.drawString("Test GUI", 16, 17, 4210752);
-		//fontRenderer.drawString("You have to finish this!", 28, 60, 045000255);
-		//draws "Inventory" or your regional equivalent
 		fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize-96 + 2, 4210752);
+		super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 	}
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3){
-		//draw your Gui here, only thing you need to change is the path
+	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY){
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.bindTexture(new ResourceLocation("dustenricher:textures/gui/GuiAttempt.png"));
 		int x = (width - xSize)/2;
 		int y = (height - ySize)/2;
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+		//super.drawGuiContainerBackgroundLayer(partialTick,mouseX,mouseY);
+		
+		int guiWidth = (super.width - super.xSize) / 2;
+		int guiHeight = (super.height - super.ySize) / 2;
+		
+		int xAxis = mouseX - guiWidth;
+		int yAxis = mouseY - guiHeight;
+		
+		for(GuiElement element : super.guiElements){
+			element.renderBackground(xAxis, yAxis, guiWidth, guiHeight);
+		}
 	}
 }
