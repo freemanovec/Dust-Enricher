@@ -11,6 +11,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dustenricher.blocks.*;
 import dustenricher.gui.GUIHandler;
+import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -45,6 +46,7 @@ public class Main {
 		Block dustInjectionChamber = new DustInjectionChamber().setBlockName("dustInjectionChamber").setCreativeTab(Mekanism.tabMekanism);
 		
 		GameRegistry.registerBlock(dustInjectionChamber, "dustInjectionChamber");
+		GameRegistry.registerTileEntity(DustInjectionChamberTE.class, "dustInjectionChamberTE");
 	}
 	void initItems(){
 		

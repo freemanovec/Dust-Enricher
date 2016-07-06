@@ -1,6 +1,10 @@
 package dustenricher.tileentities;
 
 import mekanism.api.IConfigurable;
+import mekanism.common.tile.TileEntityBasicBlock;
+import mekanism.common.tile.TileEntityContainerBlock;
+import mekanism.common.tile.TileEntityElectricBlock;
+import mekanism.common.tile.TileEntityNoisyElectricBlock;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,6 +25,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	private ItemStack[] inv;
 	
 	boolean metastateActive = false;
+	
 	public void setMetastate(boolean active){
 		if(active){
 			if(facing<5){
@@ -38,6 +43,19 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		}
 	}
 	
+	@Override
+	public void readFromNBT(NBTTagCompound nbt){
+		super.readFromNBT(nbt);
+		metastateActive = nbt.getBoolean("metastateActive");
+		setTo = nbt.getBoolean("setTo");
+	}
+	@Override
+	public void writeToNBT(NBTTagCompound nbt){
+		super.writeToNBT(nbt);
+		nbt.setBoolean("metastateActive", metastateActive);
+		nbt.setBoolean("setTo", setTo);
+	}
+	
 	public DustInjectionChamberTE(){
 		inv = new ItemStack[9];
 	}
@@ -52,7 +70,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -122,19 +139,23 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		boolean inRange = player.getDistanceSq(xCoord+0.5f, yCoord+0.5f, zCoord+0.5f)<64;
 		return (sameEntity&&inRange);
 	}
+
+	@Override
+	public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
+		return true;
+	}
+
 	@Override
 	public void openInventory() {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void closeInventory() {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack itemStack) {
-		return true;
-	}
+
 
 }
