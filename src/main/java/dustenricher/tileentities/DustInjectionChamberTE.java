@@ -27,6 +27,15 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	boolean metastateActive = false;
 	
 	private double energy_max = 1500000d;
+	public double energyPerTick = 2500;
+	private double operatingTicks = 0;
+	private double ticksRequired = 10;
+	
+	
+	public double getScaledProgress()
+	{
+		return (operatingTicks/ticksRequired);
+	}
 	public double getMaxEnergy(){
 		return energy_max;
 	}
@@ -53,7 +62,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			return true;
 		}
 	}
-	private double energy_internal = 1000000d;
+	private double energy_internal = 0;
 	
 	@Override
 	public void updateEntity(){
@@ -62,6 +71,9 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			setEnergy(0);*/
 		if(!removeEnergy(10000))
 			setEnergy(getMaxEnergy());
+		operatingTicks++;
+		if(operatingTicks>ticksRequired)
+			operatingTicks = 0;
 		//System.out.println("Energy is now " + getEnergy());
 	}
 	
