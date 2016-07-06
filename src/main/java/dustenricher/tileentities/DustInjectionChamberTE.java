@@ -1,19 +1,16 @@
 package dustenricher.tileentities;
 
+import dustenricher.common.Recipe;
+import dustenricher.common.Recipes;
 import mekanism.api.IConfigurable;
-import mekanism.common.tile.TileEntityBasicBlock;
-import mekanism.common.tile.TileEntityContainerBlock;
-import mekanism.common.tile.TileEntityElectricBlock;
-import mekanism.common.tile.TileEntityNoisyElectricBlock;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
 public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable{
 
@@ -30,6 +27,12 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	public double energyPerTick = 2500;
 	private double operatingTicks = 0;
 	private double ticksRequired = 10;
+	
+	public Slot slot_infuse;
+	public Slot slot_input;
+	public Slot slot_output;
+	public Slot slot_energy;
+	public Slot slot_upgrades;
 	
 	
 	public double getScaledProgress()
@@ -66,29 +69,91 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	@Override
 	public void updateEntity(){
-		/*setEnergy(getEnergy()+10000);
-		if(getEnergy()==getMaxEnergy())
-			setEnergy(0);*/
 		if(!removeEnergy(10000))
 			setEnergy(getMaxEnergy());
-		operatingTicks++;
+		/*operatingTicks++;
 		if(operatingTicks>ticksRequired)
-			operatingTicks = 0;
-		//System.out.println("Energy is now " + getEnergy());
+			operatingTicks = 0;*/
+		if(slot_input==null){
+			return;
+		}
+		if(slot_input.getHasStack()){
+			Item inSlot = slot_input.getStack().getItem();
+			Recipe foundRecipe = null;
+			for(Recipe recipe : Recipes.recipes_DustInjectionChamber){
+				if(recipe.getInput()==inSlot){
+					foundRecipe = recipe;
+				}
+			}
+			if(foundRecipe!=null){
+				if(slot_input.getStack().getItem()==foundRecipe.getInput()){
+					//process
+					if(slot_output.getHasStack()){
+						if(slot_output.getStack().getItem() == foundRecipe.getOutput()){
+							//output item is already in output slot
+							if(slot_output.getStack().stackSize>=64){
+								//output slot is full
+								//DONT do anything
+								setMetastate(false);
+							}else{
+								//output item is already in output slot
+								//we can increase the itemstack size
+								processTick(foundRecipe.getOutput());
+							}
+						}else{
+							//item in output slot is not the same as our desired output item
+							//DONT do anything
+							setMetastate(false);
+						}
+					}else{
+						//output slot is empty
+						processTick(foundRecipe.getOutput());
+					}
+				}else{
+					setMetastate(false);
+				}
+			}else{
+				setMetastate(false);
+			}
+		}else{
+			setMetastate(false);
+		}
+	}
+	private void processTick(Item outputItem){
+		//System.out.println("Processing tick!");
+		setMetastate(true);
+		if(operatingTicks==ticksRequired){
+			//we're done
+			if(slot_output.getHasStack()){
+				//output slot has something in them
+				ItemStack inSlot = slot_output.getStack();
+				ItemStack toSlot = new ItemStack(inSlot.getItem(),inSlot.stackSize+1);
+				slot_output.putStack(toSlot);
+				slot_input.decrStackSize(1);
+			}else{
+				ItemStack toSlot = new ItemStack(outputItem,1);
+				slot_output.putStack(toSlot);
+				slot_input.decrStackSize(1);
+			}
+			
+			operatingTicks=0;
+		}else{
+			operatingTicks++;
+		}
 	}
 	
 	public void setMetastate(boolean active){
 		if(active){
+			System.out.println("Setting to true");
 			if(facing<5){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 1);
-				System.out.println("Set active!");
 				metastateActive = true;
 			}
 		}else{
-			System.out.println(facing);
+			System.out.println("Setting to false");
+			//System.out.println(facing);
 			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>4){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 1);
-				System.out.println("Set inactive!");
 				metastateActive = false;
 			}
 		}

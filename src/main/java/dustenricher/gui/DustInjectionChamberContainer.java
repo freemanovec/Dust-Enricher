@@ -1,6 +1,8 @@
 package dustenricher.gui;
 
 import dustenricher.tileentities.DustInjectionChamberTE;
+import mekanism.common.inventory.slot.SlotEnergy;
+import mekanism.common.inventory.slot.SlotOutput;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -13,13 +15,6 @@ public class DustInjectionChamberContainer extends Container{
 	
 	public DustInjectionChamberContainer(InventoryPlayer inventoryPlayer, DustInjectionChamberTE te){
 		tileEntity = te;
-		//the Slot constructor takes the IInventory and the slot number in that it binds to
-		//and the x-y coordinates it resides on-screen
-		/*for(int i=0;i<3;i++){
-			for(int j=0;j<3;j++){
-				addSlotToContainer(new Slot(tileEntity,j+i*3,62+j*18,17+i*18));
-			}
-		}*/
 		bindMachineInventory(te);
 		bindPlayerInventory(inventoryPlayer);
 	}
@@ -28,7 +23,14 @@ public class DustInjectionChamberContainer extends Container{
 		return tileEntity.isUseableByPlayer(player);
 	}
 	protected void bindMachineInventory(DustInjectionChamberTE te){
-		addSlotToContainer(new Slot(te,2,80,35));
+		te.slot_infuse = new Slot(te,2,17,35);
+		te.slot_input = new Slot(te,1,51,43);
+		te.slot_output = new SlotOutput(te,3,109,43);
+		te.slot_energy = new SlotEnergy.SlotDischarge(te, 4, 143, 35);
+		addSlotToContainer(te.slot_infuse);
+		addSlotToContainer(te.slot_input);
+		addSlotToContainer(te.slot_output);
+		addSlotToContainer(te.slot_energy);
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer){
 		for(int i=0;i<3;i++){

@@ -15,6 +15,8 @@ import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.common.Mekanism;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 
 @Mod(modid = ResourcesDNM.modid, version = ResourcesDNM.version, canBeDeactivated = false, dependencies = "required-after:Mekanism")
 public class Main {
@@ -37,6 +39,7 @@ public class Main {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance, new GUIHandler());
 		initItems();
 		initBlocks();
+		initRecipes();
 	}
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event){
@@ -50,5 +53,9 @@ public class Main {
 	}
 	void initItems(){
 		
+	}
+	void initRecipes(){
+		Recipes.AddRecipe(new Recipe(Items.apple,Items.gold_ingot,Items.golden_apple));
+		Recipes.AddRecipe(new Recipe(Items.coal,Items.redstone,Items.diamond));
 	}
 }
