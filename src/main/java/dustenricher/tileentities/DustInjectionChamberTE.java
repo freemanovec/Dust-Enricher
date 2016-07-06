@@ -34,18 +34,35 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		return energy_internal;
 	}
 	public void setEnergy(double val){
-		if(val>energy_max)
-			val = energy_max;
+		if(val>getMaxEnergy())
+			val = getMaxEnergy();
 		energy_internal = val;
+	}
+	public void addEnergy(double val){
+		if((val+getEnergy())>getMaxEnergy()){
+			setEnergy(getMaxEnergy());
+		}else{
+			setEnergy(getEnergy()+val);
+		}
+	}
+	public boolean removeEnergy(double val){
+		if(getEnergy()-val<0){
+			return false;
+		}else{
+			setEnergy(getEnergy()-val);
+			return true;
+		}
 	}
 	private double energy_internal = 1000000d;
 	
 	@Override
 	public void updateEntity(){
-		setEnergy(getEnergy()+10000);
+		/*setEnergy(getEnergy()+10000);
 		if(getEnergy()==getMaxEnergy())
-			setEnergy(0);
-		System.out.println("Energy is now " + getEnergy());
+			setEnergy(0);*/
+		if(!removeEnergy(10000))
+			setEnergy(getMaxEnergy());
+		//System.out.println("Energy is now " + getEnergy());
 	}
 	
 	public void setMetastate(boolean active){

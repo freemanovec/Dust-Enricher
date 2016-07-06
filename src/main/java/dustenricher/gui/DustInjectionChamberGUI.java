@@ -6,6 +6,9 @@ import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiPowerBar;
+import mekanism.client.gui.element.GuiSlot;
+import mekanism.client.gui.element.GuiSlot.SlotOverlay;
+import mekanism.client.gui.element.GuiSlot.SlotType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -26,6 +29,10 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 		tileEntity = te;
 		//guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
 		guiElements.add(new GUIPowerBar(this,tileEntity,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
+		guiElements.add(new GuiSlot(SlotType.INPUT,this,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 42));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 108, 42));
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 142, 34).with(SlotOverlay.POWER));
+		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 16, 34));
 	}
 	
 	@Override
