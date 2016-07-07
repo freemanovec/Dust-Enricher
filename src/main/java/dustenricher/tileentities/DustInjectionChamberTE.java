@@ -5,6 +5,8 @@ import java.util.EnumSet;
 import dustenricher.common.IEnergyWrapper;
 import dustenricher.common.Recipe;
 import dustenricher.common.Recipes;
+import dustenricher.origin.TileEntityElectricBlock;
+import dustenricher.origin.TileEntityNoisyElectricBlock;
 import mekanism.api.IConfigurable;
 import mekanism.api.MekanismConfig.general;
 import mekanism.common.base.IActiveState;
@@ -19,8 +21,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable, IActiveState, IEnergyWrapper{
+public class DustInjectionChamberTE extends TileEntityElectricBlock implements IInventory, IConfigurable, IActiveState, IEnergyWrapper{
 
+	
+	
+	
 	public void setFacing(int val){
 		facing = val;
 	}
@@ -31,7 +36,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	boolean metastateActive = false;
 	
 	private double energy_internal = 0;
-	private double energy_max = 1500000d;
+	private static double energy_max = 1500000d;
 	public double energyPerTick = 2500;
 	private double operatingTicks = 0;
 	private double ticksRequired = 200;
@@ -201,6 +206,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	}
 	
 	public DustInjectionChamberTE(){
+		super("DustInjectionChamber", energy_max);
+		//TODO Fix everything
 		inv = new ItemStack[9];
 	}
 	boolean setTo = false;
