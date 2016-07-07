@@ -94,7 +94,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 							if(slot_output.getStack().stackSize>=64){
 								//output slot is full
 								//DONT do anything
-								System.out.println("-1");
 								setMetastate(false);
 							}else{
 								//output item is already in output slot
@@ -104,7 +103,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 						}else{
 							//item in output slot is not the same as our desired output item
 							//DONT do anything
-							System.out.println("0");
 							setMetastate(false);
 						}
 					}else{
@@ -112,15 +110,12 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 						processTick(foundRecipe.getOutput());
 					}
 				}else{
-					System.out.println("1");
 					setMetastate(false);
 				}
 			}else{
-				System.out.println("2");
 				setMetastate(false);
 			}
 		}else{
-			System.out.println("3");
 			setMetastate(false);
 		}
 	}
@@ -149,13 +144,11 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	public void setMetastate(boolean active){
 		if(active){
-			System.out.println("Setting to true");
 			if(facing<5){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 2);
 				metastateActive = true;
 			}
 		}else{
-			System.out.println("Setting to false");
 			//System.out.println(facing);
 			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>4){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 2);
