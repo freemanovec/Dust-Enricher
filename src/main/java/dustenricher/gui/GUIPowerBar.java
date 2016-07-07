@@ -30,6 +30,7 @@ public class GUIPowerBar extends GuiElement{
 			@Override
 			public String getTooltip()
 			{
+				System.out.println("Got energy to display: " + tileEntity.getEnergy());
 				return MekanismUtils.getEnergyDisplay(tileEntity.getEnergy());
 			}
 			

@@ -1,8 +1,13 @@
 package dustenricher.tileentities;
 
+import java.util.EnumSet;
+
+import dustenricher.common.IEnergyWrapper;
 import dustenricher.common.Recipe;
 import dustenricher.common.Recipes;
 import mekanism.api.IConfigurable;
+import mekanism.api.MekanismConfig.general;
+import mekanism.common.base.IActiveState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -11,8 +16,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable{
+public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable, IActiveState, IEnergyWrapper{
 
 	public void setFacing(int val){
 		facing = val;
@@ -23,16 +30,19 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	boolean metastateActive = false;
 	
+	private double energy_internal = 0;
 	private double energy_max = 1500000d;
 	public double energyPerTick = 2500;
 	private double operatingTicks = 0;
-	private double ticksRequired = 10;
+	private double ticksRequired = 200;
 	
 	public Slot slot_infuse;
 	public Slot slot_input;
 	public Slot slot_output;
 	public Slot slot_energy;
 	public Slot slot_upgrades;
+	
+	public NBTTagCompound nbtTagCompound;
 	
 	
 	public double getScaledProgress()
@@ -42,13 +52,17 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	public double getMaxEnergy(){
 		return energy_max;
 	}
-	public double getEnergy(){
+	public final double getEnergy(){
+		//System.out.println("Returning energy: " + energy_internal);
 		return energy_internal;
 	}
 	public void setEnergy(double val){
 		if(val>getMaxEnergy())
 			val = getMaxEnergy();
 		energy_internal = val;
+		System.out.println("Energy level is " + val);
+		System.out.println("Internal reported " + energy_internal);
+		System.out.println("GetEnergy got " + getEnergy());
 	}
 	public void addEnergy(double val){
 		if((val+getEnergy())>getMaxEnergy()){
@@ -65,12 +79,12 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			return true;
 		}
 	}
-	private double energy_internal = 0;
+	
 	
 	@Override
 	public void updateEntity(){
-		if(!removeEnergy(10000))
-			setEnergy(getMaxEnergy());
+		/*if(!removeEnergy(10000))
+			setEnergy(getMaxEnergy());*/
 		/*operatingTicks++;
 		if(operatingTicks>ticksRequired)
 			operatingTicks = 0;*/
@@ -141,15 +155,27 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			operatingTicks++;
 		}
 	}
-	
 	public void setMetastate(boolean active){
+		if(active!=metastateActive){
+			//state changed
+			if(active){
+				worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, 14);
+				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
+				worldObj.updateLightByType(EnumSkyBlock.Block, xCoord, yCoord, zCoord);
+				this.lightUpdate();
+			}else{
+				worldObj.setLightValue(EnumSkyBlock.Block, xCoord, yCoord, zCoord, 0);
+				worldObj.notifyBlockChange(xCoord, yCoord, zCoord, blockType);
+				worldObj.updateLightByType(EnumSkyBlock.Block, xCoord, yCoord, zCoord);
+				this.lightUpdate();
+			}
+		}
 		if(active){
 			if(facing<5){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 2);
 				metastateActive = true;
 			}
 		}else{
-			//System.out.println(facing);
 			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>4){
 				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 2);
 				metastateActive = false;
@@ -160,16 +186,18 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	@Override
 	public void readFromNBT(NBTTagCompound nbt){
 		super.readFromNBT(nbt);
+		nbtTagCompound = nbt;
 		metastateActive = nbt.getBoolean("metastateActive");
-		setTo = nbt.getBoolean("setTo");
 		energy_internal = nbt.getDouble("energy_internal");
+		operatingTicks = nbt.getDouble("operatingTicks");
 	}
 	@Override
 	public void writeToNBT(NBTTagCompound nbt){
 		super.writeToNBT(nbt);
+		nbtTagCompound = nbt;
 		nbt.setBoolean("metastateActive", metastateActive);
-		nbt.setBoolean("setTo", setTo);
 		nbt.setDouble("energy_internal", energy_internal);
+		nbt.setDouble("operatingTicks", operatingTicks);
 	}
 	
 	public DustInjectionChamberTE(){
@@ -263,14 +291,103 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 
 	@Override
 	public void openInventory() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void closeInventory() {
-		// TODO Auto-generated method stub
-		
+	}
+	@Override
+	public boolean getActive() {
+		return metastateActive;
+	}
+	@Override
+	public void setActive(boolean active) {
+		setMetastate(active);
+	}
+	@Override
+	public boolean renderUpdate() {
+		return false;
+	}
+	@Override
+	public boolean lightUpdate() {
+		return true;
+	}
+	@Override
+	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
+		if(getOutputtingSides().contains(from)){
+			double toRemove = Math.min(getEnergy(), Math.min(getMaxOutput(), maxExtract*general.FROM_TE));
+			if(!simulate){
+				setEnergy(getEnergy()-toRemove);
+			}
+			return (int)Math.round(toRemove*general.TO_TE);
+		}
+		return 0;
+	}
+	@Override
+	public int getEnergyStored(ForgeDirection arg0) {
+		return (int)Math.round(getEnergy()*general.TO_TE);
+	}
+	@Override
+	public int getMaxEnergyStored(ForgeDirection arg0) {
+		return (int)Math.round(getMaxEnergy()*general.TO_TE);
+	}
+	@Override
+	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
+		if(getConsumingSides().contains(from))
+		{
+			double toAdd = (int)Math.min(getMaxEnergy()-getEnergy(), maxReceive*general.FROM_TE);
+
+			if(!simulate)
+			{
+				setEnergy(getEnergy() + toAdd);
+			}
+
+			return (int)Math.round(toAdd*general.TO_TE);
+		}
+
+		return 0;
+	}
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return getConsumingSides().contains(from) || getOutputtingSides().contains(from);
+	}
+	@Override
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount)
+	{
+		//System.out.println("Getting energy");
+		if(!(getConsumingSides().contains(side) || side == ForgeDirection.UNKNOWN))
+		{
+			System.out.println("Returning 0");
+			return 0;
+		}
+		double toUse = Math.min(getMaxEnergy()-getEnergy(), amount);
+		//setEnergy(getEnergy() + toUse);
+		addEnergy(toUse);
+		return toUse;
+	}
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side)
+	{
+		return getConsumingSides().contains(side);
+		//return false;
+	}
+	@Override
+	public boolean canOutputTo(ForgeDirection side)
+	{
+		return getOutputtingSides().contains(side);
+	}
+	@Override
+	public EnumSet<ForgeDirection> getOutputtingSides() {
+		return EnumSet.noneOf(ForgeDirection.class);
+	}
+	@Override
+	public EnumSet<ForgeDirection> getConsumingSides() {
+		return EnumSet.allOf(ForgeDirection.class);
+		//return EnumSet.noneOf(ForgeDirection.class);
+	}
+	@Override
+	public double getMaxOutput() {
+		return 0;
 	}
 
 
