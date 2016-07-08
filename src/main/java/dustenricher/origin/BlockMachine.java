@@ -1,4 +1,4 @@
-package dustenricher.blocks;
+package dustenricher.origin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -114,6 +114,7 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import dustenricher.tileentities.DustInjectionChamberTE;
 
 /**
  * Block class for handling multiple machine block IDs.
@@ -169,15 +170,15 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 	
 	public IIcon BASE_ICON;
 
-	public MachineBlock blockType;
+	public BlockMachine.MachineBlock blockType;
 
-	public BlockMachine(MachineBlock type)
+	public BlockMachine(MachineBlock machineBlock1)
 	{
 		super(Material.iron);
 		setHardness(3.5F);
 		setResistance(16F);
 		setCreativeTab(Mekanism.tabMekanism);
-		blockType = type;
+		blockType = machineBlock1;
 	}
 
 	@Override
@@ -1049,7 +1050,7 @@ public class BlockMachine extends BlockContainer implements ISpecialBounds, IBlo
 		BASIC_FACTORY(MachineBlock.MACHINE_BLOCK_1, 5, "Factory", 11, TileEntityFactory.class, true, false, true),
 		ADVANCED_FACTORY(MachineBlock.MACHINE_BLOCK_1, 6, "Factory", 11, TileEntityAdvancedFactory.class, true, false, true),
 		ELITE_FACTORY(MachineBlock.MACHINE_BLOCK_1, 7, "Factory", 11, TileEntityEliteFactory.class, true, false, true),
-		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "MetallurgicInfuser", 12, TileEntityMetallurgicInfuser.class, true, true, true),
+		METALLURGIC_INFUSER(MachineBlock.MACHINE_BLOCK_1, 8, "NewInfuser", 12, DustInjectionChamberTE.class, true, true, true),
 		PURIFICATION_CHAMBER(MachineBlock.MACHINE_BLOCK_1, 9, "PurificationChamber", 15, TileEntityPurificationChamber.class, true, false, true),
 		ENERGIZED_SMELTER(MachineBlock.MACHINE_BLOCK_1, 10, "EnergizedSmelter", 16, TileEntityEnergizedSmelter.class, true, false, true),
 		TELEPORTER(MachineBlock.MACHINE_BLOCK_1, 11, "Teleporter", 13, TileEntityTeleporter.class, true, false, false),

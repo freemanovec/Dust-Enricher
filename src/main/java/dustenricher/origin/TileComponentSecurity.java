@@ -23,7 +23,7 @@ public class TileComponentSecurity implements ITileComponent
 	
 	private String owner;
 	
-	private SecurityMode securityMode = SecurityMode.PUBLIC;
+	private dustenricher.origin.ISecurityTile.SecurityMode securityMode = dustenricher.origin.ISecurityTile.SecurityMode.PUBLIC;
 	
 	private SecurityFrequency frequency;
 	
@@ -56,14 +56,14 @@ public class TileComponentSecurity implements ITileComponent
 		owner = o;
 	}
 	
-	public SecurityMode getMode()
+	public dustenricher.origin.ISecurityTile.SecurityMode getMode()
 	{
 		return securityMode;
 	}
 	
-	public void setMode(SecurityMode mode)
+	public void setMode(dustenricher.origin.ISecurityTile.SecurityMode securityMode2)
 	{
-		securityMode = mode;
+		securityMode = securityMode2;
 	}
 	
 	public FrequencyManager getManager(Frequency freq)
@@ -134,7 +134,7 @@ public class TileComponentSecurity implements ITileComponent
 	@Override
 	public void read(NBTTagCompound nbtTags) 
 	{
-		securityMode = SecurityMode.values()[nbtTags.getInteger("securityMode")];
+		securityMode = dustenricher.origin.ISecurityTile.SecurityMode.values()[nbtTags.getInteger("securityMode")];
 		
 		if(nbtTags.hasKey("owner"))
 		{
@@ -151,7 +151,7 @@ public class TileComponentSecurity implements ITileComponent
 	@Override
 	public void read(ByteBuf dataStream) 
 	{
-		securityMode = SecurityMode.values()[dataStream.readInt()];
+		securityMode = dustenricher.origin.ISecurityTile.SecurityMode.values()[dataStream.readInt()];
 		
 		if(dataStream.readBoolean())
 		{
