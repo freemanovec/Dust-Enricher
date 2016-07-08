@@ -33,7 +33,7 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 	public DustInjectionChamberGUI(InventoryPlayer inventoryPlayer, DustInjectionChamberTE te){
 		//the container is instanciated and passed to the superclass for handling		
 		super(new DustInjectionChamberContainer(inventoryPlayer, te));
-		tileEntity = te;
+		/*tileEntity = te;
 		//guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
 		guiElements.add(new GUIPowerBar(this,tileEntity,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
 		guiElements.add(new GuiSlot(SlotType.INPUT,this,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 42));
@@ -56,7 +56,7 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 				String multiplier = MekanismUtils.getEnergyDisplay(tileEntity.energyPerTick);
 				return ListUtils.asList(LangUtils.localize("gui.using") + ": " + multiplier + "/t", LangUtils.localize("gui.needed") + ": " + MekanismUtils.getEnergyDisplay(tileEntity.getMaxEnergy()-tileEntity.getEnergy()));
 			}
-		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+		}, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));*/
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTick, int mouseX, int mouseY){
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("dustenricher:textures/gui/GuiAttempt.png"));
+		this.mc.renderEngine.bindTexture(new ResourceLocation("dustenricher:textures/gui/GuiBlank.png"));
 		int x = (width - xSize)/2;
 		int y = (height - ySize)/2;
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);

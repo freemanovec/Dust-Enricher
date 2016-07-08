@@ -2,6 +2,8 @@ package dustenricher.common;
 
 import java.util.ArrayList;
 
+import net.minecraft.item.Item;
+
 public final class Recipes {
 	public static ArrayList<Recipe> recipes_DustInjectionChamber = new ArrayList<Recipe>();
 	

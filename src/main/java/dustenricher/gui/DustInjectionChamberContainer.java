@@ -23,17 +23,9 @@ public class DustInjectionChamberContainer extends Container{
 		return tileEntity.isUseableByPlayer(player);
 	}
 	protected void bindMachineInventory(DustInjectionChamberTE te){
-		/*te.slot_infuse = new Slot(te,2,17,35);
-		te.slot_input = new Slot(te,1,51,43);
-		te.slot_output = new SlotOutput(te,3,109,43);
-		te.slot_energy = new SlotEnergy.SlotDischarge(te, 4, 143, 35);
-		addSlotToContainer(te.slot_infuse);
-		addSlotToContainer(te.slot_input);
-		addSlotToContainer(te.slot_output);
-		addSlotToContainer(te.slot_energy);*/
-		addSlotToContainer(new Slot(te,2,17,35));
-		addSlotToContainer(new Slot(te,1,51,43));
-		addSlotToContainer(new SlotOutput(te,3,109,43));
+		addSlotToContainer(new Slot(te,2,22,50));
+		addSlotToContainer(new Slot(te,1,22,23));
+		addSlotToContainer(new SlotOutput(te,3,92,36));
 		addSlotToContainer(new SlotEnergy.SlotDischarge(te, 4, 143, 35));
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer){
