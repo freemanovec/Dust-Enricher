@@ -26,7 +26,7 @@ public class DustInjectionChamberContainer extends Container{
 		addSlotToContainer(new Slot(te,2,22,50));
 		addSlotToContainer(new Slot(te,1,22,23));
 		addSlotToContainer(new SlotOutput(te,3,92,36));
-		addSlotToContainer(new SlotEnergy.SlotDischarge(te, 4, 143, 35));
+		addSlotToContainer(new SlotEnergy.SlotDischarge(te, 4, 144, 14));
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer){
 		for(int i=0;i<3;i++){
