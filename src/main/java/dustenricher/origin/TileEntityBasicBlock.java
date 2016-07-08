@@ -66,6 +66,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	@Override
 	public void updateEntity()
 	{
+		if(worldObj!=null)
 		if(!worldObj.isRemote && general.destroyDisabledBlocks)
 		{
 			MachineType type = MachineType.get(getBlockType(), getBlockMetadata());
@@ -84,7 +85,7 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 		}
 
 		onUpdate();
-
+		if(worldObj!=null)
 		if(!worldObj.isRemote)
 		{
 			openedThisTick.clear();
@@ -170,6 +171,8 @@ public abstract class TileEntityBasicBlock extends TileEntity implements IWrench
 	{
 		super.validate();
 
+		//TODO fix
+		if(worldObj!=null)
 		if(worldObj.isRemote)
 		{
 			Mekanism.packetHandler.sendToServer(new DataRequestMessage(Coord4D.get(this)));
