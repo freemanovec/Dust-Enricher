@@ -1,5 +1,7 @@
 package dustenricher.gui;
 
+import dustenricher.gui.elements.SlotInfuse;
+import dustenricher.gui.elements.SlotInput;
 import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -24,10 +26,18 @@ public class DustInjectionChamberContainer extends Container{
 		return tileEntity.isUseableByPlayer(player);
 	}
 	protected void bindMachineInventory(DustInjectionChamberTE te){
-		addSlotToContainer(new Slot(te,2,22,50));
-		addSlotToContainer(new Slot(te,1,22,23));
-		addSlotToContainer(new SlotOutput(te,3,92,36));
-		addSlotToContainer(new SlotEnergy.SlotDischarge(te, 4, 144, 14));
+		Slot input2 = new SlotInfuse(te,2,22,50);
+		Slot input1 = new SlotInput(te,1,22,23);
+		Slot output = new SlotOutput(te,3,92,36);
+		Slot energy = new SlotEnergy.SlotDischarge(te, 4, 144, 14);
+		addSlotToContainer(input2);
+		addSlotToContainer(input1);
+		addSlotToContainer(output);
+		addSlotToContainer(energy);
+		te.slot_input = input1;
+		te.slot_infuse = input2;
+		te.slot_output = output;
+		te.slot_energy = energy;
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer){
 		for(int i=0;i<3;i++){
@@ -43,7 +53,7 @@ public class DustInjectionChamberContainer extends Container{
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot){
 		ItemStack stack = null;
 		Slot slotObject = (Slot)inventorySlots.get(slot);
-		System.out.println("InventorySize = " + tileEntity.getSizeInventory());
+		//System.out.println("InventorySize = " + tileEntity.getSizeInventory());
 		
 		//null checks and checks if the item can be stacked (maxStackSize > 1)
 		if(slotObject!=null&&slotObject.getHasStack()){  //start
