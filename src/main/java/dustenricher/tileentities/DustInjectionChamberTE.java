@@ -11,6 +11,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -38,12 +39,10 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	public Packet getDescriptionPacket(){ //sending
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
-		System.out.println("Packet sent");
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
 	}
 	@Override
-	public void onDataPacket(NetworkManager networkManager, S35PacketUpdateTileEntity packet){
-		System.out.println("Packet received");
+	public void onDataPacket(NetworkManager networkManager, S35PacketUpdateTileEntity packet){ //receiving
 		readFromNBT(packet.func_148857_g());
 	}
 	public void markForUpdate(){
@@ -57,16 +56,32 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	@Override
 	public void writeToNBT(NBTTagCompound nbt){
 		super.writeToNBT(nbt);
-		System.out.println("Saving energy: " + getEnergy());
 		nbt.setDouble("energy", getEnergy());
 		nbt.setInteger("ticks_running", ticks_running);
+
+		NBTTagList list = new NBTTagList();
+	    for (int i = 0; i < this.getSizeInventory(); ++i) {
+	        if (this.getStackInSlot(i) != null) {
+	            NBTTagCompound stackTag = new NBTTagCompound();
+	            stackTag.setByte("Slot", (byte) i);
+	            this.getStackInSlot(i).writeToNBT(stackTag);
+	            list.appendTag(stackTag);
+	        }
+	    }
+	    nbt.setTag("Items", list);
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound nbt){
 		super.readFromNBT(nbt);
-		System.out.println("Reading energy: " + nbt.getDouble("energy"));
 		setEnergy(nbt.getDouble("energy"));
 		ticks_running = nbt.getInteger("ticks_running");
+		
+		NBTTagList list = nbt.getTagList("Items", 10);
+	    for (int i = 0; i < list.tagCount(); ++i) {
+	        NBTTagCompound stackTag = list.getCompoundTagAt(i);
+	        int slot = stackTag.getByte("Slot") & 255;
+	        this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
+	    }
 	}
 	
 	///--END OF SAVING STUFF--\\\
@@ -131,7 +146,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	public void updateEntity(){
 		markForUpdate(); //TODO check if we need this
 		if(!worldObj.isRemote){ //TODO check this if it really needs to be server-side only
-			System.out.println("Energy is: " + energy_internal);
+			//System.out.println("Energy is: " + energy_internal);
 		
 		if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null)
 			return;
@@ -148,7 +163,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			processingFinished(output);
 		}else{
 			//processing not finished, increment our progress meter
-			ticks_running++;
+			if(removeEnergy(energy_perItem/ticks_required))
+				ticks_running++;
 		}
 		}
 	}
@@ -189,7 +205,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	///--TEXTURE CHANGE--\\\
 	public void setActiveTexture(boolean active){
 		int facing = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-		System.out.println("Actual metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+		//System.out.println("Actual metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
   		if(active){
  			System.out.println("Setting to true");
   			if(facing<5){
@@ -206,7 +222,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
   		}
 	}
 	///--END OF TEXTURE CHANGE--\\\
-	
 	
 	///--INVENTORY STUFF, DO NOT CHANGE--\\\
 

@@ -37,7 +37,7 @@ public class PowerBar extends GuiElement{
 			@Override
 			public double getLevel()
 			{
-				System.out.println("Got level of energy: " + tileEntity.getEnergy()/tileEntity.getMaxEnergy());
+				//System.out.println("Got level of energy: " + tileEntity.getEnergy()/tileEntity.getMaxEnergy());
 				return tileEntity.getEnergy()/tileEntity.getMaxEnergy();
 			}
 		};
