@@ -87,7 +87,9 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	///--END OF SAVING STUFF--\\\
 	///--ENERGY STUFF--\\\
 	private double energy_internal = 0;
-	private double energy_perItem = 7500;
+	private double energy_perItem = 2500;
+	private double energy_perTickMaxInput = 1000;
+	private double energy_max = 20000;
 	@SideOnly(Side.CLIENT)
 	public double client_getEnergy(){
 		return energy_internal;
@@ -97,7 +99,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		return energy_internal;
 	}
 	public double getMaxEnergy(){
-		return 10000;
+		return energy_max;
 	}
 	public boolean addEnergy(double energy){
 		energy_internal += energy;
@@ -123,6 +125,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		if(getEnergy()==getMaxEnergy())
 			return 0;
 		double possible = (getMaxEnergy()-getEnergy());
+		if(possible>energy_perTickMaxInput)
+			possible = energy_perTickMaxInput;
 		if(possible-amount>=0){
 			addEnergy(amount);
 			return amount;
@@ -139,7 +143,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	///--PROCESSING--\\\
 	
 	public int ticks_running = 0;
-	public int ticks_required = 40;
+	public int ticks_required = 200;
 	public Slot slot_input, slot_infuse, slot_output, slot_energy;
 	
 	@Override

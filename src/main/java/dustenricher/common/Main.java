@@ -23,7 +23,6 @@ public class Main {
 	public static final String MODID = "dustenricher";
 	
 	public static DustEnricherCreativeTab tabDustEnricher = new DustEnricherCreativeTab();
-	public static SimpleNetworkWrapper testChannel;
 	
 	@SidedProxy(clientSide="dustenricher.common.ClientProxy",serverSide="dustenricher.common.ServerProxy")
 	public static CommonProxy proxy;

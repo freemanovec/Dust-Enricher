@@ -2,6 +2,7 @@ package dustenricher.gui;
 
 import dustenricher.gui.elements.SlotInfuse;
 import dustenricher.gui.elements.SlotInput;
+import dustenricher.gui.elements.SlotUpgradeSpeed;
 import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.common.inventory.slot.SlotEnergy;
 import mekanism.common.inventory.slot.SlotOutput;
@@ -30,14 +31,17 @@ public class DustInjectionChamberContainer extends Container{
 		Slot input1 = new SlotInput(te,1,22,23);
 		Slot output = new SlotOutput(te,3,92,36);
 		Slot energy = new SlotEnergy.SlotDischarge(te, 4, 144, 14);
+		//Slot upgrade = new SlotUpgradeSpeed(te,5,144,57);
 		addSlotToContainer(input2);
 		addSlotToContainer(input1);
 		addSlotToContainer(output);
 		addSlotToContainer(energy);
+		//addSlotToContainer(upgrade);
 		te.slot_input = input1;
 		te.slot_infuse = input2;
 		te.slot_output = output;
 		te.slot_energy = energy;
+		//te.slot_upgrade = upgrade;
 	}
 	protected void bindPlayerInventory(InventoryPlayer inventoryPlayer){
 		for(int i=0;i<3;i++){
