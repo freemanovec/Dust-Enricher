@@ -1,15 +1,20 @@
 package dustenricher.tileentities;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dustenricher.common.Recipes;
 import mekanism.api.IConfigurable;
+import mekanism.api.energy.IStrictEnergyAcceptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.ForgeDirection;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable{
+public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable, IStrictEnergyAcceptor{
 	
 	private ItemStack[] inventory = new ItemStack[4];
 	
@@ -18,18 +23,79 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	public double getScaledProgress(){
 		double progress = (double)ticks_running/(double)ticks_required;
-		System.out.println("Progress: " + progress);
 		if(progress>1)
 			return 1;
 		else
 			return progress;
 	}
+	///--SAVING STUFF--\\\
+	
+	@SideOnly(Side.SERVER)
+	@Override
+	public void writeToNBT(NBTTagCompound nbt){
+		super.writeToNBT(nbt);
+		System.out.println("Saving energy: " + getEnergy());
+		nbt.setDouble("energy", getEnergy());
+	}
+	@Override
+	public void readFromNBT(NBTTagCompound nbt){
+		super.readFromNBT(nbt);
+		System.out.println("Reading energy: " + nbt.getDouble("energy"));
+		setEnergy(nbt.getDouble("energy"));
+	}
+	
+	///--END OF SAVING STUFF--\\\
+	///--ENERGY STUFF--\\\
+	private double energy_internal = 0;
+	private double energy_perItem = 7500;
+	@SideOnly(Side.CLIENT)
+	public double client_getEnergy(){
+		return energy_internal;
+		//TODO handle packet server ---> client
+	}
 	public double getEnergy(){
-		return 5000;
+		return energy_internal;
 	}
 	public double getMaxEnergy(){
 		return 10000;
 	}
+	public boolean addEnergy(double energy){
+		energy_internal += energy;
+		if(energy_internal>getMaxEnergy()){
+			energy_internal = getMaxEnergy();
+			return false;
+		}
+		return true;
+	}
+	public boolean removeEnergy(double energy){
+		if(energy_internal-energy<0)
+			return false;
+		energy_internal -= energy;
+		return true;
+	}
+	@Override
+	public void setEnergy(double energy) {
+		energy_internal = energy;
+	}
+
+	@Override
+	public double transferEnergyToAcceptor(ForgeDirection side, double amount) {
+		double possible = (getMaxEnergy()-getEnergy());
+		if(possible-amount>=0){
+			addEnergy(amount);
+			return amount;
+		}
+		addEnergy(possible);
+		return possible;
+	}
+
+	@Override
+	public boolean canReceiveEnergy(ForgeDirection side) {
+		if(getEnergy()==getMaxEnergy())
+			return false;
+		return true;
+	}	
+	///--END OF ENERGY STUFF--\\\
 	///--PROCESSING--\\\
 	
 	public int ticks_running = 0;
@@ -38,6 +104,9 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	@Override
 	public void updateEntity(){
+		if(!worldObj.isRemote){ //TODO check this if it really needs to be server-side only
+			System.out.println("Energy is: " + energy_internal);
+		
 		if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null)
 			return;
 		if(slot_input.getStack()==null||slot_infuse.getStack()==null){
@@ -54,6 +123,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		}else{
 			//processing not finished, increment our progress meter
 			ticks_running++;
+		}
 		}
 	}
 	public void processingFinished(Item output){
@@ -206,9 +276,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
-		System.out.println("Slot: " + slot);
 		return true;
-		//TODO filter items based on recipes and slot
 	}
 	
 	///--END OF INVENTORY STUFF--\\\
@@ -226,5 +294,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		return true;
 	}
 	///--END OF DEBUG STUFF--\\\
+
+
 
 }

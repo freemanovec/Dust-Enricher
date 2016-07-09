@@ -49,6 +49,7 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 			@Override
 			public double getProgress()
 			{
+				//TODO handle packet
 				return tileEntity.getScaledProgress();
 			}
 		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 43));
