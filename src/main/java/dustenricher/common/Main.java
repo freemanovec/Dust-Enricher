@@ -8,6 +8,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dustenricher.gui.GUIHandler;
 import dustenricher.tileentities.DustInjectionChamberTE;
@@ -22,6 +23,7 @@ public class Main {
 	public static final String MODID = "dustenricher";
 	
 	public static DustEnricherCreativeTab tabDustEnricher = new DustEnricherCreativeTab();
+	public static SimpleNetworkWrapper testChannel;
 	
 	@SidedProxy(clientSide="dustenricher.common.ClientProxy",serverSide="dustenricher.common.ServerProxy")
 	public static CommonProxy proxy;

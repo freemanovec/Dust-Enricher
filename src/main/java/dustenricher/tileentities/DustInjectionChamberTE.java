@@ -11,6 +11,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -28,20 +31,42 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		else
 			return progress;
 	}
+	
+	///--NETWORKING STUFF--\\\
+	
+	@Override
+	public Packet getDescriptionPacket(){ //sending
+		NBTTagCompound tag = new NBTTagCompound();
+		writeToNBT(tag);
+		System.out.println("Packet sent");
+		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, tag);
+	}
+	@Override
+	public void onDataPacket(NetworkManager networkManager, S35PacketUpdateTileEntity packet){
+		System.out.println("Packet received");
+		readFromNBT(packet.func_148857_g());
+	}
+	public void markForUpdate(){
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	}
+	
+	///--END OF NETWORKING STUFF--\\\
+	
 	///--SAVING STUFF--\\\
 	
-	@SideOnly(Side.SERVER)
 	@Override
 	public void writeToNBT(NBTTagCompound nbt){
 		super.writeToNBT(nbt);
 		System.out.println("Saving energy: " + getEnergy());
 		nbt.setDouble("energy", getEnergy());
+		nbt.setInteger("ticks_running", ticks_running);
 	}
 	@Override
 	public void readFromNBT(NBTTagCompound nbt){
 		super.readFromNBT(nbt);
 		System.out.println("Reading energy: " + nbt.getDouble("energy"));
 		setEnergy(nbt.getDouble("energy"));
+		ticks_running = nbt.getInteger("ticks_running");
 	}
 	
 	///--END OF SAVING STUFF--\\\
@@ -80,6 +105,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 
 	@Override
 	public double transferEnergyToAcceptor(ForgeDirection side, double amount) {
+		if(getEnergy()==getMaxEnergy())
+			return 0;
 		double possible = (getMaxEnergy()-getEnergy());
 		if(possible-amount>=0){
 			addEnergy(amount);
@@ -91,8 +118,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 
 	@Override
 	public boolean canReceiveEnergy(ForgeDirection side) {
-		if(getEnergy()==getMaxEnergy())
-			return false;
 		return true;
 	}	
 	///--END OF ENERGY STUFF--\\\
@@ -104,6 +129,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	@Override
 	public void updateEntity(){
+		markForUpdate(); //TODO check if we need this
 		if(!worldObj.isRemote){ //TODO check this if it really needs to be server-side only
 			System.out.println("Energy is: " + energy_internal);
 		
