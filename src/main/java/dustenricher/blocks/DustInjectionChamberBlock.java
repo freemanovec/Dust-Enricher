@@ -26,6 +26,7 @@ public class DustInjectionChamberBlock extends BlockContainer{
 		super(Material.iron);
 		this.setHardness(3.5f);
 		this.setResistance(8f);
+		this.setBlockName("dustinjectionchamber");
 		this.textureName = "dustenricher:SteelCasing";
 	}
 	@Override
@@ -48,11 +49,13 @@ public class DustInjectionChamberBlock extends BlockContainer{
 			return iconFrontOff;
 		if(meta==3&&side==5)
 			return iconFrontOff;
-		if(meta==5&&side==2)
+		if(meta==4&&side==3)
 			return iconFrontOn;
-		if(meta==6&&side==5)
+		if(meta==5&&side==4)
 			return iconFrontOn;
-		if(meta==7&&side==3)
+		if(meta==6&&side==2)
+			return iconFrontOn;
+		if(meta==7&&side==5)
 			return iconFrontOn;
 		return iconCasing;
 	}

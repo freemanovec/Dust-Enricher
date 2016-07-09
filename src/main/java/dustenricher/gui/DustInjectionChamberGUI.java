@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import dustenricher.gui.elements.PowerBar;
 import dustenricher.tileentities.DustInjectionChamberTE;
 import mekanism.api.util.ListUtils;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElement.IInfoHandler;
 import mekanism.client.gui.element.GuiEnergyInfo;
+import mekanism.client.gui.element.GuiPowerBar;
 import mekanism.client.gui.element.GuiProgress;
 import mekanism.client.gui.element.GuiProgress.IProgressInfoHandler;
 import mekanism.client.gui.element.GuiProgress.ProgressBar;
@@ -33,13 +35,29 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 	public DustInjectionChamberGUI(InventoryPlayer inventoryPlayer, DustInjectionChamberTE te){
 		//the container is instanciated and passed to the superclass for handling		
 		super(new DustInjectionChamberContainer(inventoryPlayer, te));
-		/*tileEntity = te;
-		//guiElements.add(new GuiPowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
-		guiElements.add(new GUIPowerBar(this,tileEntity,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
+		tileEntity = te;
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 35));
+		guiElements.add(new GuiProgress(new IProgressInfoHandler()
+		{
+			@Override
+			public double getProgress()
+			{
+				return tileEntity.getScaledProgress();
+			}
+		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 43));
+		guiElements.add(new PowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
+		/*guiElements.add(new GuiPowerBar(this,tileEntity,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
 		guiElements.add(new GuiSlot(SlotType.INPUT,this,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 42));
-		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 108, 42));
-		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 142, 34).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 16, 34));
+		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 108, 42));*/
+		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 143, 13).with(SlotOverlay.POWER));
+		/*guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 16, 34));
 		guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
 		guiElements.add(new GuiProgress(new IProgressInfoHandler()
 		{

@@ -8,31 +8,45 @@ import net.minecraft.tileentity.TileEntity;
 
 public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable{
 	
-	public int facing = 0;
-	
 	private ItemStack[] inventory;
 	
 	public DustInjectionChamberTE(){
 		inventory = new ItemStack[4];
 	}
 	
+	public double getScaledProgress(){
+		return 0.5d;
+	}
+	public double getEnergy(){
+		return 5000;
+	}
+	public double getMaxEnergy(){
+		return 10000;
+	}
+	
+	///--TEXTURE CHANGE--\\\
 	public void setActiveTexture(boolean active){
+		int facing = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		System.out.println("Actual metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
   		if(active){
  			System.out.println("Setting to true");
   			if(facing<5){
   				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 1);
+  				System.out.println("New metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
  				System.out.println("Set active!");
   			}
   		}else{
- 			System.out.println(facing);
  			System.out.println("Setting to false");
- 			//System.out.println(facing);
-  			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>4){
+  			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>3){
   				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 1);
  				System.out.println("Set inactive!");
   			}
   		}
 	}
+	///--END OF TEXTURE CHANGE--\\\
+	
+	
+	///--INVENTORY STUFF, DO NOT CHANGE--\\\
 
 	@Override
 	public int getSizeInventory() {
@@ -129,6 +143,9 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		return true;
 		//TODO filter items based on recipes and slot
 	}
+	
+	///--END OF INVENTORY STUFF--\\\
+	///--START OF DEBUG STUFF--\\\
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side) {
@@ -141,4 +158,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		setActiveTexture(true);
 		return true;
 	}
+	///--END OF DEBUG STUFF--\\\
+
 }
