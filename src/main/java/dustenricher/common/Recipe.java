@@ -1,23 +1,24 @@
 package dustenricher.common;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class Recipe {
-	private Item input;
-	private Item infuse;
-	private Item output;
-	public Item getInput(){
+	private ItemStack input;
+	private ItemStack infuse;
+	private ItemStack output;
+	public ItemStack getInput(){
 		return input;
 	}
-	public Item getInfuse(){
+	public ItemStack getInfuse(){
 		return infuse;
 	}
-	public Item getOutput(){
+	public ItemStack getOutput(){
 		return output;
 	}
-	public Recipe(Item _input, Item _infuse, Item _output){
-		this.input = _input;
-		this.infuse = _infuse;
-		this.output = _output;
+	public Recipe(ItemStack _input, ItemStack _infuse, ItemStack _output){
+		this.input = new ItemStack(_input.getItem(),1,_input.getItemDamage());
+		this.infuse = new ItemStack(_infuse.getItem(),1,_infuse.getItemDamage());
+		this.output = new ItemStack(_output.getItem(),1,_output.getItemDamage());
 	}
 }

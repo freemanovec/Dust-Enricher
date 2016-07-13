@@ -18,38 +18,45 @@ public final class Recipes {
 	}
 	
 	public static boolean isValidInput(ItemStack itemstack){
-		Item item = itemstack.getItem();
+		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
 		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInput()==item){
+			if(recipe.getInput().getItem()==oneOfThem.getItem()&&recipe.getInput().getItemDamage()==oneOfThem.getItemDamage())
 				return true;
-			}
+			/*if(recipe.getInput()==oneOfThem){
+				return true;
+			}*/
 		}
 		return false;
 	}
 	public static boolean isValidInfuse(ItemStack itemstack){
-		Item item = itemstack.getItem();
+		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
 		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInfuse()==item){
+			if(recipe.getInfuse().getItem()==oneOfThem.getItem()&&recipe.getInfuse().getItemDamage()==oneOfThem.getItemDamage())
 				return true;
-			}
+			/*if(recipe.getInfuse()==oneOfThem){
+				return true;
+			}*/
 		}
 		return false;
 	}
-	public static boolean hasOutputFrom(Item input, Item infuse){
+	public static boolean hasOutputFrom(ItemStack input, ItemStack infuse){
 		if(getOutputFrom(input,infuse)==null)
 			return false;
 		else
 			return true;
 	}
-	public static Item getOutputFrom(Item input, Item infuse){
-		if(!isValidInput(new ItemStack(input)) || !isValidInfuse(new ItemStack(infuse)))
+	public static ItemStack getOutputFrom(ItemStack input, ItemStack infuse){
+		if(!isValidInput(input) || !isValidInfuse(infuse)){
+			System.out.println("Input/Infuse not valid");
 			return null;
-		else{
+		}else{
 			ArrayList<Recipe> foundRecipes = new ArrayList<Recipe>();
+			ItemStack oneOfThem = new ItemStack(input.getItem(),1,input.getItemDamage());
 			for(Recipe recipe : recipes_DustInjectionChamber){
-				if(recipe.getInput()==input){
+				if(recipe.getInput()==oneOfThem){
+					System.out.println("Input valid");
 					foundRecipes.add(recipe);
 				}
 			}

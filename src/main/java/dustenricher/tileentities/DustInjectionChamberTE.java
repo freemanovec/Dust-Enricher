@@ -75,13 +75,14 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.readFromNBT(nbt);
 		setEnergy(nbt.getDouble("energy"));
 		ticks_running = nbt.getInteger("ticks_running");
-		
-		NBTTagList list = nbt.getTagList("Items", 10);
-	    for (int i = 0; i < list.tagCount(); ++i) {
-	        NBTTagCompound stackTag = list.getCompoundTagAt(i);
+		if(!worldObj.isRemote){
+			NBTTagList list = nbt.getTagList("Items", 10);
+	    	for (int i = 0; i < list.tagCount(); ++i) {
+	    	NBTTagCompound stackTag = list.getCompoundTagAt(i);
 	        int slot = stackTag.getByte("Slot") & 255;
 	        this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
-	    }
+	    	}
+		}
 	}
 	
 	///--END OF SAVING STUFF--\\\
@@ -148,37 +149,41 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	
 	@Override
 	public void updateEntity(){
-		markForUpdate(); //TODO check if we need this
-		if(!worldObj.isRemote){ //TODO check this if it really needs to be server-side only
-			//System.out.println("Energy is: " + energy_internal);
-		
-		if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null)
-			return;
-		if(slot_input.getStack()==null||slot_infuse.getStack()==null){
-			ticks_running=0;
-			return;
-		}
-		//start of processing
-		Item output = Recipes.getOutputFrom(slot_input.getStack().getItem(), slot_infuse.getStack().getItem());
-		if(output==null)
-			return;
-		//we can now start
-		if(ticks_running>=ticks_required){
-			processingFinished(output);
-		}else{
-			//processing not finished, increment our progress meter
-			if(removeEnergy(energy_perItem/ticks_required))
-				ticks_running++;
-		}
+		markForUpdate();
+		if(!worldObj.isRemote){
+			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null)
+				return;
+			if(slot_input.getStack()==null||slot_infuse.getStack()==null){
+				ticks_running=0;
+				return;
+			}
+			//start of processing
+			System.out.println("Input:  " + slot_input.getStack());
+			System.out.println("Infuse: " + slot_infuse.getStack());
+			ItemStack output = Recipes.getOutputFrom(slot_input.getStack(), slot_infuse.getStack());
+			if(output==null){
+				//System.out.println("Output is null");
+				return;
+			}
+			//we can now start
+			if(ticks_running>=ticks_required){
+				processingFinished(output);
+			}else{
+				//processing not finished, increment our progress meter
+				if(removeEnergy(energy_perItem/ticks_required))
+					ticks_running++;
+			}
 		}
 	}
-	public void processingFinished(Item output){
+	public void processingFinished(ItemStack output){
 		if(!slot_output.getHasStack()){
 			//nothing in output slot, we can proceed
 			processingFinalize(output);
 		}else{
 			//something in output slot
-			if(slot_output.getStack().getItem()==output){
+			//get one from output slot
+			ItemStack oneOfThem = new ItemStack(slot_output.getStack().getItem(),1,slot_output.getStack().getItemDamage());
+			if(oneOfThem==output){
 				//item in output slot is our desired item
 				if(slot_output.getStack().stackSize<64){
 					//we can still add one
@@ -193,13 +198,13 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			}
 		}
 	}
-	public void processingFinalize(Item output){
+	public void processingFinalize(ItemStack output){
 		slot_input.decrStackSize(1);
 		slot_infuse.decrStackSize(1);
 		if(slot_output.getHasStack()){
-			slot_output.putStack(new ItemStack(output,slot_output.getStack().stackSize+1));
+			slot_output.putStack(new ItemStack(output.getItem(),slot_output.getStack().stackSize+1,slot_output.getStack().getItemDamage()));
 		}else{
-			slot_output.putStack(new ItemStack(output,1));
+			slot_output.putStack(new ItemStack(output.getItem(),1,slot_output.getStack().getItemDamage()));
 		}
 		//reset running meter
 		ticks_running=0;

@@ -14,6 +14,7 @@ import dustenricher.gui.GUIHandler;
 import dustenricher.tileentities.DustInjectionChamberTE;
 import ic2.core.Ic2Items;
 import mekanism.common.MekanismItems;
+import mekanism.common.Resource;
 import mekanism.common.recipe.RecipeHandler;
 import dustenricher.blocks.DustInjectionChamberBlock;
 import net.minecraft.block.Block;
@@ -46,11 +47,11 @@ public class Main {
 		NetworkRegistry.INSTANCE.registerGuiHandler(Main.instance, new GUIHandler());
 		initItems();
 		initBlocks();
-		initRecipes();
 	}
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event){
 		proxy.postInit(event);
+		initRecipes();
 	}
 
 	void initBlocks(){
@@ -60,44 +61,59 @@ public class Main {
 	void initItems(){
 		Item dustDirtToRegister = new Item().setUnlocalizedName("dustDirt").setCreativeTab(tabDustEnricher).setTextureName("dustenricher:dustDirt");
 		GameRegistry.registerItem(dustDirtToRegister, "dustDirt");
-		dustDirt = dustDirtToRegister;		
+		dustDirtItem = dustDirtToRegister;		
 	}
-	Item dustDirt;
+	Item dustDirtItem;
 	void initRecipes(){
-		Item dustIron = GameRegistry.findItem("Mekanism", "ironDust");
-		Item dustGold = GameRegistry.findItem("Mekanism", "goldDust");
-		Item dustOsmium = GameRegistry.findItem("Mekanism", "osmiumDust");
-		Item dustObsidian = GameRegistry.findItem("Mekanism", "obsidianDust");
-		Item dustDiamond = GameRegistry.findItem("Mekanism", "diamondDust");
-		Item dustSteel = GameRegistry.findItem("Mekanism", "steelDust");
-		Item dustCopper = GameRegistry.findItem("Mekanism", "copperDust");
-		Item dustTin = GameRegistry.findItem("Mekanism", "tinDust");
-		Item dustSilver = GameRegistry.findItem("Mekanism", "silverDust");
-		Item dustLead = GameRegistry.findItem("Mekanism", "leadDust");
-		Item dustSulfur = GameRegistry.findItem("Mekanism", "sulfurDust");
-		Item dustLithium = GameRegistry.findItem("Mekanism", "lithiumDust");
-		Item dustCoal = Ic2Items.coalDust.getItem();
-		Item dustBronze = Ic2Items.bronzeDust.getItem();
-		Item dustClay = Ic2Items.clayDust.getItem();
-		Item dustStone = Ic2Items.stoneDust.getItem();
-		Item dustLapisLazuli = Ic2Items.lapiDust.getItem();
-		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,Items.glowstone_dust));
+		ItemStack dustIron = new ItemStack(MekanismItems.Dust, 1, Resource.IRON.ordinal());
+		ItemStack dustGold = new ItemStack(MekanismItems.Dust, 1, Resource.GOLD.ordinal());
+		ItemStack dustOsmium = new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal());
+		ItemStack dustObsidian = new ItemStack(MekanismItems.OtherDust, 2, 6);
+		ItemStack dustDiamond = new ItemStack(MekanismItems.OtherDust, 1, 0);
+		ItemStack dustSteel = new ItemStack(MekanismItems.OtherDust, 1, 1);
+		ItemStack dustCopper = new ItemStack(MekanismItems.Dust, 1, Resource.COPPER.ordinal());
+		ItemStack dustTin = new ItemStack(MekanismItems.Dust, 1, Resource.TIN.ordinal());
+		ItemStack dustSilver = new ItemStack(MekanismItems.Dust, 1, Resource.SILVER.ordinal());
+		ItemStack dustLead = new ItemStack(MekanismItems.Dust, 1, Resource.LEAD.ordinal());
+		ItemStack dustSulfur = new ItemStack(MekanismItems.OtherDust, 1, 3);
+		ItemStack dustLithium = new ItemStack(MekanismItems.OtherDust, 1, 4);
+		
+		System.out.println("------------------------------------------------------------------");
+		System.out.println("Dust tin: " + dustTin.getDisplayName() + " , " + dustTin.getItemDamage());
+		
+		ItemStack dustCoal = Ic2Items.coalDust;
+		ItemStack dustBronze = Ic2Items.bronzeDust;
+		ItemStack dustClay = Ic2Items.clayDust;
+		ItemStack dustStone = Ic2Items.stoneDust;
+		ItemStack dustLapisLazuli = Ic2Items.lapiDust;
+		
+		ItemStack dustGlowstone = new ItemStack(Items.glowstone_dust,1);
+		ItemStack redstone = new ItemStack(Items.redstone,1);
+		
+		ItemStack dustDirt = new ItemStack(dustDirtItem,1);
+
+		Recipes.AddRecipe(new Recipe(new ItemStack(Items.iron_ingot),new ItemStack(Items.coal),dustGlowstone));
+		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,dustGlowstone));
 		Recipes.AddRecipe(new Recipe(dustTin,dustCopper,dustBronze));
 		Recipes.AddRecipe(new Recipe(dustCoal,dustDirt,dustClay));
-		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.dirt), new ItemStack(dustDirt));
+		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.dirt), new ItemStack(dustDirt.getItem(),8,dustDirt.getItemDamage()));
 		Recipes.AddRecipe(new Recipe(dustDirt,dustStone,dustCoal));
-		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,dustCopper));
-		Recipes.AddRecipe(new Recipe(dustCopper,Items.redstone,dustGold));
+		Recipes.AddRecipe(new Recipe(dustTin,dustDirt,dustCopper));
+		Recipes.AddRecipe(new Recipe(dustCopper,redstone,dustGold));
 		Recipes.AddRecipe(new Recipe(dustTin,dustStone,dustIron));
-		Recipes.AddRecipe(new Recipe(dustTin,Items.glowstone_dust,dustSilver));
+		Recipes.AddRecipe(new Recipe(dustTin,dustGlowstone,dustSilver));
 		Recipes.AddRecipe(new Recipe(dustCoal,dustStone,dustTin));
 		Recipes.AddRecipe(new Recipe(dustSulfur,dustCoal,dustLead));
 		Recipes.AddRecipe(new Recipe(dustDiamond,dustCoal,dustObsidian));
-		Recipes.AddRecipe(new Recipe(dustIron,Items.glowstone_dust,dustLapisLazuli));
-		Recipes.AddRecipe(new Recipe(dustGold,Items.glowstone_dust,dustSulfur));
+		Recipes.AddRecipe(new Recipe(dustIron,dustGlowstone,dustLapisLazuli));
+		Recipes.AddRecipe(new Recipe(dustGold,dustGlowstone,dustSulfur));
 		Recipes.AddRecipe(new Recipe(dustSilver,dustStone,dustLithium));
 		Recipes.AddRecipe(new Recipe(dustSulfur,dustLithium,dustDiamond));
 		Recipes.AddRecipe(new Recipe(dustTin,dustIron,dustOsmium));
 		Recipes.AddRecipe(new Recipe(dustIron,dustCoal,dustSteel));
+		
+		for(Recipe recipe : Recipes.recipes_DustInjectionChamber){
+			System.out.println("Recipe for " + recipe.getOutput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " from " + recipe.getInput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " with infusion of " + recipe.getInfuse().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " loaded.");
+		}
 	}
 }
