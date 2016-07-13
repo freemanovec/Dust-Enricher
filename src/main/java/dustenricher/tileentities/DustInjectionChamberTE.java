@@ -59,72 +59,24 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.writeToNBT(nbt);
 		nbt.setDouble("energy", getEnergy());
 		nbt.setInteger("ticks_running", ticks_running);
-		
-		//System.out.println("Writing to NBT");
-		//System.out.println("WorldObj isRemote: " + worldObj.isRemote);
-		
-		/*NBTTagList nbttaglist = new NBTTagList();
-
-        for (int i = 0; i < this.inventory.length; ++i)
-        {
-            if (this.inventory[i] != null)
-            {
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Slot", (byte)i);
-                this.inventory[i].writeToNBT(nbttagcompound1);
-                nbttaglist.appendTag(nbttagcompound1);
-            }
-        }
-
-        nbt.setTag("Items", nbttaglist);*/
-		
-		
-		//System.out.println("worldObj is remote " + worldObj.isRemote);
-		
 		NBTTagList list = new NBTTagList();
 	    for (int i = 0; i < this.getSizeInventory(); ++i) {
-	    	//System.out.println("Size of inventory: " + this.getSizeInventory());
 	        if (this.getStackInSlot(i) != null) {
-	        	//System.out.println("Slot " + i + " not null");
 	            NBTTagCompound stackTag = new NBTTagCompound();
 	            stackTag.setByte("Slot", (byte) i);
 	            ItemStack inSlot = this.getStackInSlot(i);
-	            //System.out.println("Stack: " + inSlot);
 	            inSlot.writeToNBT(stackTag);
 	            list.appendTag(stackTag);
 	        }
 	    }
 	    nbt.setTag("Items", list);
-	    //super.writeToNBT(nbt);
 	}
 	
 	@Override
 	public void readFromNBT(NBTTagCompound nbt){
-		//System.out.println("Reading from NBT");
-		//System.out.println("Reading from NBT");
-		//System.out.println("WorldObj isRemote: " + worldObj.isRemote);
 		super.readFromNBT(nbt);
 		setEnergy(nbt.getDouble("energy"));
 		ticks_running = nbt.getInteger("ticks_running");
-		
-		
-		/*NBTTagList nbttaglist = nbt.getTagList("Items", 10);
-        this.inventory = new ItemStack[this.getSizeInventory()];
-
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            byte b0 = nbttagcompound1.getByte("Slot");
-
-            if (b0 >= 0 && b0 < this.inventory.length)
-            {
-                this.inventory[b0] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
-            }
-        }*/
-		
-		
-		//System.out.println("worldObj is remote " + worldObj.isRemote);
-		//if(worldObj!=null&&!worldObj.isRemote){
 		if(worldObj==null||!worldObj.isRemote){
 			NBTTagList list = nbt.getTagList("Items", 10);
 			System.out.println("Got NBTTagList " + list);
@@ -133,40 +85,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	        	int slot = stackTag.getByte("Slot") & 255;
 	        	this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
 	    	}
-		}/*else{
-			if(!worldObj.isRemote){
-				
-			}
-		}*/
-		//}
-		/*if(nbt.getString("slot_input")!="")
-			slot_input.putStack(OreDic);*/
-		/*if(worldObj!=null&&!worldObj.isRemote&&slot_input!=null){
-			String nbt_input = nbt.getString("slot_input");
-			if(nbt_input!=""){
-				ItemStack toPut = OreDict.getItemStack(nbt_input);
-				toPut.stackSize = nbt.getInteger("slot_input_count");
-				slot_input.putStack(toPut);
-			}
-			String nbt_infuse = nbt.getString("slot_infuse");
-			if(nbt_infuse!=""){
-				ItemStack toPut = OreDict.getItemStack(nbt_infuse);
-				toPut.stackSize = nbt.getInteger("slot_infuse_count");
-				slot_infuse.putStack(toPut);
-			}
-			String nbt_output = nbt.getString("slot_output");
-			if(nbt_output!=""){
-				ItemStack toPut = OreDict.getItemStack(nbt_output);
-				toPut.stackSize = nbt.getInteger("slot_output_count");
-				slot_output.putStack(toPut);
-			}
-			String nbt_energy = nbt.getString("slot_energy");
-			if(nbt_energy!=""){
-				ItemStack toPut = OreDict.getItemStack(nbt_energy);
-				toPut.stackSize = nbt.getInteger("slot_energy_count");
-				slot_energy.putStack(toPut);
-			}
-		}*/
+		}
 	}
 	
 	///--END OF SAVING STUFF--\\\
