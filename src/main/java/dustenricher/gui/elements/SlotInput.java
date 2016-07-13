@@ -1,6 +1,7 @@
 package dustenricher.gui.elements;
 
 import dustenricher.common.Recipes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

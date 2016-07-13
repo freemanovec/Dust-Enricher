@@ -13,7 +13,7 @@ public class SlotUpgradeSpeed extends Slot{
 	
 	@Override
 	public boolean isItemValid(ItemStack itemstack){
-		System.out.println("Validating");
+		System.out.println("Validating " + itemstack);
 		//return (itemstack.getItem()==MekanismItems.SpeedUpgrade);
 		return true;
 	}

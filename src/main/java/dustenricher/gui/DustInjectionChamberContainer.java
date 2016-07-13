@@ -32,6 +32,7 @@ public class DustInjectionChamberContainer extends Container{
 		Slot output = new SlotOutput(te,3,92,36);
 		Slot energy = new SlotEnergy.SlotDischarge(te, 4, 144, 14);
 		//Slot upgrade = new SlotUpgradeSpeed(te,5,144,57);
+		
 		addSlotToContainer(input2);
 		addSlotToContainer(input1);
 		addSlotToContainer(output);
@@ -53,6 +54,16 @@ public class DustInjectionChamberContainer extends Container{
 			addSlotToContainer(new Slot(inventoryPlayer,i,8+i*18,142));
 		}
 	}
+	
+	@Override
+	public boolean enchantItem(EntityPlayer player, int action){
+		System.out.println("enchantItem called!");
+		
+		return true;
+	}
+	//@Override
+	
+	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot){
 		ItemStack stack = null;

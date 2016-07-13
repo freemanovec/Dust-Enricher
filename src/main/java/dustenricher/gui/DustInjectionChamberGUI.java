@@ -24,6 +24,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -60,6 +62,24 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 21, 22));
 		//guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 143, 56).with(SlotOverlay.PLUS));
 		//guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
+	}
+	@Override
+	public void initGui(){
+		super.initGui();
+		this.buttonList.add(new GuiButton(0, this.width / 2 + 30, this.height / 2 -25, 40, 20, tileEntity.outputSide));
+		//this.buttonList.add(new GuiButton(0, 50, 50, "Button"));
+	}
+	@Override
+	protected void actionPerformed(GuiButton button){
+		System.out.println("Action performed");
+		tileEntity.btn_changeOutputSide();
+		GuiScreen actualScreen = this.mc.currentScreen;
+		//this.mc.displayGuiScreen(null);
+		/*if(this.mc.currentScreen==null)
+			this.mc.setIng*/
+		this.mc.displayGuiScreen(actualScreen);
+		//this.mc.playerController.sendEnchantPacket(, p_78756_2_);
+		super.actionPerformed(button);
 	}
 	
 	@Override

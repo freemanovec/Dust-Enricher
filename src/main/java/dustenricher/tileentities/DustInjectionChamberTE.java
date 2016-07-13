@@ -22,6 +22,12 @@ import net.minecraftforge.common.util.ForgeDirection;
 public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable, IStrictEnergyAcceptor{
 	
 	private ItemStack[] inventory = new ItemStack[4];
+	public int facing(){
+		int process = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		if(process>4)
+			process-=4;
+		return process;
+	}
 	
 	public DustInjectionChamberTE(){
 	}
@@ -59,6 +65,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.writeToNBT(nbt);
 		nbt.setDouble("energy", getEnergy());
 		nbt.setInteger("ticks_running", ticks_running);
+		nbt.setInteger("output_side_iteration", outputSideIteration);
+		nbt.setString("output_side", outputSide);
 		NBTTagList list = new NBTTagList();
 	    for (int i = 0; i < this.getSizeInventory(); ++i) {
 	        if (this.getStackInSlot(i) != null) {
@@ -77,6 +85,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.readFromNBT(nbt);
 		setEnergy(nbt.getDouble("energy"));
 		ticks_running = nbt.getInteger("ticks_running");
+		outputSideIteration = nbt.getInteger("output_side_iteration");
+		outputSide = nbt.getString("output_side");
 		if(worldObj==null||!worldObj.isRemote){
 			NBTTagList list = nbt.getTagList("Items", 10);
 			System.out.println("Got NBTTagList " + list);
@@ -97,7 +107,6 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	@SideOnly(Side.CLIENT)
 	public double client_getEnergy(){
 		return energy_internal;
-		//TODO handle packet server ---> client
 	}
 	public double getEnergy(){
 		return energy_internal;
@@ -144,6 +153,27 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		return true;
 	}	
 	///--END OF ENERGY STUFF--\\\
+	
+	public String outputSide = "None";
+	private int outputSideIteration = 0;
+	private String[] outputSides = {
+			"None",
+			"Left",
+			"Right",
+			"Front",
+			"Back",
+			"Top",
+			"Bottom"
+	};
+	public void btn_changeOutputSide(){
+		System.out.println("Received button signal");
+		outputSideIteration++;
+		if(outputSideIteration>6)
+			outputSideIteration = 0;
+		System.out.println("New face: " + outputSides[outputSideIteration]);
+		this.outputSide = outputSides[outputSideIteration];
+	}
+	
 	///--PROCESSING--\\\
 	
 	public int ticks_running = 0;
@@ -154,9 +184,17 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	public void updateEntity(){
 		markForUpdate();
 		if(!worldObj.isRemote){
-			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null)
+			//System.out.println(this.outputSide);
+			if(outputSide!="None"){
+				System.out.println("Facing integer: " + facing());
+			}			
+			
+			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null){
+				setActiveTexture(false);
 				return;
+			}
 			if(slot_input.getStack()==null||slot_infuse.getStack()==null){
+				setActiveTexture(false);
 				ticks_running=0;
 				return;
 			}
@@ -166,6 +204,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			ItemStack output = Recipes.getOutputFrom(slot_input.getStack(), slot_infuse.getStack());
 			if(output==null){
 				//System.out.println("Output is null");
+				setActiveTexture(false);
 				return;
 			}
 			//we can now start
@@ -173,8 +212,10 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 				processingFinished(output);
 			}else{
 				//processing not finished, increment our progress meter
-				if(removeEnergy(energy_perItem/ticks_required))
+				if(removeEnergy(energy_perItem/ticks_required)){
+					setActiveTexture(true);
 					ticks_running++;
+				}
 			}
 		}
 	}
@@ -225,17 +266,17 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		int facing = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		//System.out.println("Actual metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
   		if(active){
- 			System.out.println("Setting to true");
+ 			//System.out.println("Setting to true");
   			if(facing<5){
   				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, facing+4, 1);
-  				System.out.println("New metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
- 				System.out.println("Set active!");
+  				//System.out.println("New metadata is " + worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+ 				//System.out.println("Set active!");
   			}
   		}else{
- 			System.out.println("Setting to false");
+ 			//System.out.println("Setting to false");
   			if(worldObj.getBlockMetadata(xCoord, yCoord, zCoord)>3){
   				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, worldObj.getBlockMetadata(xCoord, yCoord, zCoord)-4, 1);
- 				System.out.println("Set inactive!");
+ 				//System.out.println("Set inactive!");
   			}
   		}
 	}
