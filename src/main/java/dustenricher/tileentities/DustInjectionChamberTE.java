@@ -158,8 +158,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 				return;
 			}
 			//start of processing
-			System.out.println("Input:  " + slot_input.getStack());
-			System.out.println("Infuse: " + slot_infuse.getStack());
+			/*System.out.println("Input:  " + slot_input.getStack());
+			System.out.println("Infuse: " + slot_infuse.getStack());*/
 			ItemStack output = Recipes.getOutputFrom(slot_input.getStack(), slot_infuse.getStack());
 			if(output==null){
 				//System.out.println("Output is null");
@@ -183,7 +183,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 			//something in output slot
 			//get one from output slot
 			ItemStack oneOfThem = new ItemStack(slot_output.getStack().getItem(),1,slot_output.getStack().getItemDamage());
-			if(oneOfThem==output){
+			if(slot_output.getStack().getItem()==output.getItem()&&slot_output.getStack().getItemDamage()==output.getItemDamage()){
 				//item in output slot is our desired item
 				if(slot_output.getStack().stackSize<64){
 					//we can still add one
@@ -202,9 +202,15 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		slot_input.decrStackSize(1);
 		slot_infuse.decrStackSize(1);
 		if(slot_output.getHasStack()){
-			slot_output.putStack(new ItemStack(output.getItem(),slot_output.getStack().stackSize+1,slot_output.getStack().getItemDamage()));
+			System.out.println("Output slot contains desired item, increasing");
+			output.stackSize=slot_output.getStack().stackSize+1;
+			//slot_output.putStack(new ItemStack(output.getItem(),slot_output.getStack().stackSize+1,slot_output.getStack().getItemDamage()));
+			slot_output.putStack(output);
 		}else{
-			slot_output.putStack(new ItemStack(output.getItem(),1,slot_output.getStack().getItemDamage()));
+			System.out.println("Output slot does not contain anything, creating");
+			output.stackSize=1;
+			//slot_output.putStack(new ItemStack(output.getItem(),1,slot_output.getStack().getItemDamage()));
+			slot_output.putStack(output);
 		}
 		//reset running meter
 		ticks_running=0;

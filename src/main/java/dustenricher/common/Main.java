@@ -94,7 +94,7 @@ public class Main {
 
 		Recipes.AddRecipe(new Recipe(new ItemStack(Items.iron_ingot),new ItemStack(Items.coal),dustGlowstone));
 		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,dustGlowstone));
-		Recipes.AddRecipe(new Recipe(dustTin,dustCopper,dustBronze));
+		/*Recipes.AddRecipe(new Recipe(dustTin,dustCopper,dustBronze));
 		Recipes.AddRecipe(new Recipe(dustCoal,dustDirt,dustClay));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.dirt), new ItemStack(dustDirt.getItem(),8,dustDirt.getItemDamage()));
 		Recipes.AddRecipe(new Recipe(dustDirt,dustStone,dustCoal));
@@ -110,7 +110,7 @@ public class Main {
 		Recipes.AddRecipe(new Recipe(dustSilver,dustStone,dustLithium));
 		Recipes.AddRecipe(new Recipe(dustSulfur,dustLithium,dustDiamond));
 		Recipes.AddRecipe(new Recipe(dustTin,dustIron,dustOsmium));
-		Recipes.AddRecipe(new Recipe(dustIron,dustCoal,dustSteel));
+		Recipes.AddRecipe(new Recipe(dustIron,dustCoal,dustSteel));*/
 		
 		for(Recipe recipe : Recipes.recipes_DustInjectionChamber){
 			System.out.println("Recipe for " + recipe.getOutput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " from " + recipe.getInput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " with infusion of " + recipe.getInfuse().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " loaded.");

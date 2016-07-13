@@ -21,12 +21,13 @@ public final class Recipes {
 		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
 		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInput().getItem()==oneOfThem.getItem()&&recipe.getInput().getItemDamage()==oneOfThem.getItemDamage())
+			//if(recipe.getInput().getItem()==oneOfThem.getItem()&&recipe.getInput().getItemDamage()==oneOfThem.getItemDamage())
+			if(recipe.getInput().getItem()==itemstack.getItem()&&recipe.getInput().getItemDamage()==itemstack.getItemDamage()){
+				//System.out.println("Input is valid for " + itemstack + " in recipe " + recipe.toString());
 				return true;
-			/*if(recipe.getInput()==oneOfThem){
-				return true;
-			}*/
+			}
 		}
+		System.out.println("Input not valid for " + itemstack);
 		return false;
 	}
 	public static boolean isValidInfuse(ItemStack itemstack){
@@ -53,18 +54,19 @@ public final class Recipes {
 			return null;
 		}else{
 			ArrayList<Recipe> foundRecipes = new ArrayList<Recipe>();
-			ItemStack oneOfThem = new ItemStack(input.getItem(),1,input.getItemDamage());
+			//ItemStack oneOfThem = new ItemStack(input.getItem(),1,input.getItemDamage());
 			for(Recipe recipe : recipes_DustInjectionChamber){
-				if(recipe.getInput()==oneOfThem){
-					System.out.println("Input valid");
+				if(recipe.getInput().getItem()==input.getItem()&&recipe.getInput().getItemDamage()==input.getItemDamage()){
+					//System.out.println("Input valid");
 					foundRecipes.add(recipe);
 				}
 			}
 			for(Recipe recipe : foundRecipes){
-				if(recipe.getInfuse()==infuse){
+				if(recipe.getInfuse().getItem()==infuse.getItem()&&recipe.getInfuse().getItemDamage()==infuse.getItemDamage()){
 					return recipe.getOutput();
 				}
 			}
+			System.out.println("Input/Infuse not found valid in recipes");
 			return null;
 		}
 	}

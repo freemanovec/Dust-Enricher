@@ -21,4 +21,8 @@ public class Recipe {
 		this.infuse = new ItemStack(_infuse.getItem(),1,_infuse.getItemDamage());
 		this.output = new ItemStack(_output.getItem(),1,_output.getItemDamage());
 	}
+	@Override
+	public String toString(){
+		return "Recipe(INPUT:"+this.input+"+INFUSE:"+this.infuse+"=OUTPUT:"+this.output+")";
+	}
 }
