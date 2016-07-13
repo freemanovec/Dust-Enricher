@@ -25,6 +25,8 @@ public final class OreDict {
 		return OreDictionary.doesOreNameExist(key);
 	}
 	public static String getKey(ItemStack itemstack){
+		if(itemstack==null)
+			return "";
 		ItemStack newItemstack = itemstack.copy();
 		newItemstack.stackSize=1;
 		int[] ids = OreDictionary.getOreIDs(newItemstack);
@@ -32,7 +34,6 @@ public final class OreDict {
 			return "";
 		int id = ids[0];
 		String key = OreDictionary.getOreName(id);
-		//System.out.println("Returning key: " + key);
 		return key;
 	}
 }

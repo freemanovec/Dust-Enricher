@@ -54,10 +54,10 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 			}
 		}, ProgressBar.MEDIUM, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 50, 43));
 		guiElements.add(new PowerBar(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"),164,15));
-		guiElements.add(new GuiSlot(SlotType.INPUT,this,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 21, 49));
+		guiElements.add(new GuiSlot(SlotType.EXTRA,this,MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 21, 49));
 		guiElements.add(new GuiSlot(SlotType.OUTPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 91, 35));
 		guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 143, 13).with(SlotOverlay.POWER));
-		guiElements.add(new GuiSlot(SlotType.EXTRA, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 21, 22));
+		guiElements.add(new GuiSlot(SlotType.INPUT, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 21, 22));
 		//guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 143, 56).with(SlotOverlay.PLUS));
 		//guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
 	}
