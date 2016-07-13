@@ -27,9 +27,10 @@ public final class OreDict {
 	public static String getKey(ItemStack itemstack){
 		ItemStack newItemstack = itemstack.copy();
 		newItemstack.stackSize=1;
-		int id = OreDictionary.getOreIDs(newItemstack)[0];
-		if(id==-1)
+		int[] ids = OreDictionary.getOreIDs(newItemstack);
+		if(ids.length<1)
 			return "";
+		int id = ids[0];
 		String key = OreDictionary.getOreName(id);
 		//System.out.println("Returning key: " + key);
 		return key;
