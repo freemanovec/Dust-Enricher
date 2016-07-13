@@ -18,22 +18,27 @@ public final class Recipes {
 	}
 	
 	public static boolean isValidInput(ItemStack itemstack){
-		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInput().getItem()==itemstack.getItem()&&recipe.getInput().getItemDamage()==itemstack.getItemDamage()){
-				return true;
+			String key = OreDict.getKey(itemstack);
+			if(key!=""){
+				if(key==recipe.getInput()){
+					return true;
+				}
 			}
 		}
 		System.out.println("Input not valid for " + itemstack);
 		return false;
 	}
 	public static boolean isValidInfuse(ItemStack itemstack){
-		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
-		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInfuse().getItem()==itemstack.getItem()&&recipe.getInfuse().getItemDamage()==itemstack.getItemDamage())
-				return true;
+			String key = OreDict.getKey(itemstack);
+			if(key!=""){
+				if(key==recipe.getInfuse()){
+					return true;
+				}
+			}
 		}
+		System.out.println("Infuse not valid for " + itemstack);
 		return false;
 	}
 	public static boolean hasOutputFrom(ItemStack input, ItemStack infuse){
@@ -46,15 +51,19 @@ public final class Recipes {
 		if(!isValidInput(input) || !isValidInfuse(infuse)){
 			return null;
 		}else{
+			if(OreDict.getKey(input)==""||OreDict.getKey(infuse)=="")
+				return null;
 			ArrayList<Recipe> foundRecipes = new ArrayList<Recipe>();
 			for(Recipe recipe : recipes_DustInjectionChamber){
-				if(recipe.getInput().getItem()==input.getItem()&&recipe.getInput().getItemDamage()==input.getItemDamage()){
+				//if(recipe.getInput().getItem()==input.getItem()&&recipe.getInput().getItemDamage()==input.getItemDamage()){
+				if(recipe.getInput()==OreDict.getKey(input)){
 					foundRecipes.add(recipe);
 				}
 			}
 			for(Recipe recipe : foundRecipes){
-				if(recipe.getInfuse().getItem()==infuse.getItem()&&recipe.getInfuse().getItemDamage()==infuse.getItemDamage()){
-					return recipe.getOutput();
+				//if(recipe.getInfuse().getItem()==infuse.getItem()&&recipe.getInfuse().getItemDamage()==infuse.getItemDamage()){
+				if(recipe.getInfuse()==OreDict.getKey(infuse)){
+					return OreDict.getItemStack(recipe.getOutput());
 				}
 			}
 			return null;

@@ -4,22 +4,30 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class Recipe {
-	private ItemStack input;
-	private ItemStack infuse;
-	private ItemStack output;
-	public ItemStack getInput(){
+	private String input;
+	private String infuse;
+	private String output;
+	public String getInput(){
 		return input;
 	}
-	public ItemStack getInfuse(){
+	public String getInfuse(){
 		return infuse;
 	}
-	public ItemStack getOutput(){
+	public String getOutput(){
 		return output;
 	}
-	public Recipe(ItemStack _input, ItemStack _infuse, ItemStack _output){
-		this.input = new ItemStack(_input.getItem(),1,_input.getItemDamage());
-		this.infuse = new ItemStack(_infuse.getItem(),1,_infuse.getItemDamage());
-		this.output = new ItemStack(_output.getItem(),1,_output.getItemDamage());
+	public Recipe(String _input, String _infuse, String _output){
+		boolean hasInput = OreDict.hasKey(_input);
+		boolean hasInfuse = OreDict.hasKey(_infuse);
+		boolean hasOutput = OreDict.hasKey(_output);
+		boolean success = hasInput&&hasInfuse&&hasOutput;
+		if(success)
+			System.out.println("Recipe initialization successful - " + "Recipe(INPUT:"+_input+"+INFUSE:"+_infuse+"=OUTPUT:"+_output+")");
+		else
+			System.out.println("Recipe initialization failed - " + "Recipe(INPUT:"+_input+"+INFUSE:"+_infuse+"=OUTPUT:"+_output+")");
+		this.input = _input;
+		this.infuse = _infuse;
+		this.output = _output;
 	}
 	@Override
 	public String toString(){

@@ -65,7 +65,7 @@ public class Main {
 	}
 	Item dustDirtItem;
 	void initRecipes(){
-		ItemStack dustIron = new ItemStack(MekanismItems.Dust, 1, Resource.IRON.ordinal());
+		/*ItemStack dustIron = new ItemStack(MekanismItems.Dust, 1, Resource.IRON.ordinal());
 		ItemStack dustGold = new ItemStack(MekanismItems.Dust, 1, Resource.GOLD.ordinal());
 		ItemStack dustOsmium = new ItemStack(MekanismItems.Dust, 1, Resource.OSMIUM.ordinal());
 		ItemStack dustObsidian = new ItemStack(MekanismItems.OtherDust, 2, 6);
@@ -90,10 +90,17 @@ public class Main {
 		ItemStack dustGlowstone = new ItemStack(Items.glowstone_dust,1);
 		ItemStack redstone = new ItemStack(Items.redstone,1);
 		
-		ItemStack dustDirt = new ItemStack(dustDirtItem,1);
+		ItemStack dustDirt = new ItemStack(dustDirtItem,1);*/
 
-		Recipes.AddRecipe(new Recipe(new ItemStack(Items.iron_ingot),new ItemStack(Items.coal),dustGlowstone));
-		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,dustGlowstone));
+		/*Recipes.AddRecipe(new Recipe(new ItemStack(Items.iron_ingot),new ItemStack(Items.coal),dustGlowstone));
+		Recipes.AddRecipe(new Recipe(dustTin,dustCoal,dustGlowstone));*/
+		if(!OreDict.hasKey("dustTin"))
+			System.out.println("XXX dustTin does not exist in oreDict");
+		if(!OreDict.hasKey("dustCoal"))
+			System.out.println("XXX dustCoal does not exist in oreDict");
+		if(!OreDict.hasKey("dustCopper"))
+			System.out.println("XXX dustCopper does not exist in oreDict");
+		Recipes.AddRecipe(new Recipe("dustTin","dustCoal","dustCopper"));
 		/*Recipes.AddRecipe(new Recipe(dustTin,dustCopper,dustBronze));
 		Recipes.AddRecipe(new Recipe(dustCoal,dustDirt,dustClay));
 		RecipeHandler.addCrusherRecipe(new ItemStack(Blocks.dirt), new ItemStack(dustDirt.getItem(),8,dustDirt.getItemDamage()));
@@ -113,7 +120,7 @@ public class Main {
 		Recipes.AddRecipe(new Recipe(dustIron,dustCoal,dustSteel));*/
 		
 		for(Recipe recipe : Recipes.recipes_DustInjectionChamber){
-			System.out.println("Recipe for " + recipe.getOutput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " from " + recipe.getInput().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " with infusion of " + recipe.getInfuse().getDisplayName() + "(" + recipe.getOutput().getItemDamage() + ")" + " loaded.");
+			System.out.println("Recipe for " + recipe.getOutput() + " from " + recipe.getInput() + " with infusion of " + recipe.getInfuse() + " loaded.");
 		}
 	}
 }
