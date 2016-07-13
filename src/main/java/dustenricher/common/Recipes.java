@@ -18,12 +18,9 @@ public final class Recipes {
 	}
 	
 	public static boolean isValidInput(ItemStack itemstack){
-		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
 		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			//if(recipe.getInput().getItem()==oneOfThem.getItem()&&recipe.getInput().getItemDamage()==oneOfThem.getItemDamage())
 			if(recipe.getInput().getItem()==itemstack.getItem()&&recipe.getInput().getItemDamage()==itemstack.getItemDamage()){
-				//System.out.println("Input is valid for " + itemstack + " in recipe " + recipe.toString());
 				return true;
 			}
 		}
@@ -34,11 +31,8 @@ public final class Recipes {
 		ItemStack oneOfThem = new ItemStack(itemstack.getItem(),1,itemstack.getItemDamage());
 		boolean inArray = false;
 		for(Recipe recipe : recipes_DustInjectionChamber){
-			if(recipe.getInfuse().getItem()==oneOfThem.getItem()&&recipe.getInfuse().getItemDamage()==oneOfThem.getItemDamage())
+			if(recipe.getInfuse().getItem()==itemstack.getItem()&&recipe.getInfuse().getItemDamage()==itemstack.getItemDamage())
 				return true;
-			/*if(recipe.getInfuse()==oneOfThem){
-				return true;
-			}*/
 		}
 		return false;
 	}
@@ -50,14 +44,11 @@ public final class Recipes {
 	}
 	public static ItemStack getOutputFrom(ItemStack input, ItemStack infuse){
 		if(!isValidInput(input) || !isValidInfuse(infuse)){
-			System.out.println("Input/Infuse not valid");
 			return null;
 		}else{
 			ArrayList<Recipe> foundRecipes = new ArrayList<Recipe>();
-			//ItemStack oneOfThem = new ItemStack(input.getItem(),1,input.getItemDamage());
 			for(Recipe recipe : recipes_DustInjectionChamber){
 				if(recipe.getInput().getItem()==input.getItem()&&recipe.getInput().getItemDamage()==input.getItemDamage()){
-					//System.out.println("Input valid");
 					foundRecipes.add(recipe);
 				}
 			}
@@ -66,7 +57,6 @@ public final class Recipes {
 					return recipe.getOutput();
 				}
 			}
-			System.out.println("Input/Infuse not found valid in recipes");
 			return null;
 		}
 	}
