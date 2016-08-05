@@ -1,11 +1,17 @@
 package dustenricher.tileentities;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dustenricher.common.OreDict;
 import dustenricher.common.Recipes;
 import mekanism.api.IConfigurable;
 import mekanism.api.energy.IStrictEnergyAcceptor;
+import mekanism.api.transmitters.TransmissionType;
+import mekanism.common.SideData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -19,7 +25,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory, IConfigurable, IStrictEnergyAcceptor{
+public class DustInjectionChamberTE extends TileEntity implements IInventory, IStrictEnergyAcceptor{//, IConfigurable{
 	
 	private ItemStack[] inventory = new ItemStack[4];
 	public int facing(){
@@ -65,8 +71,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.writeToNBT(nbt);
 		nbt.setDouble("energy", getEnergy());
 		nbt.setInteger("ticks_running", ticks_running);
-		nbt.setInteger("output_side_iteration", outputSideIteration);
-		nbt.setString("output_side", outputSide);
+		//nbt.setInteger("output_side_iteration", outputSideIteration);
+		//nbt.setString("output_side", outputSide);
 		NBTTagList list = new NBTTagList();
 	    for (int i = 0; i < this.getSizeInventory(); ++i) {
 	        if (this.getStackInSlot(i) != null) {
@@ -85,8 +91,8 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		super.readFromNBT(nbt);
 		setEnergy(nbt.getDouble("energy"));
 		ticks_running = nbt.getInteger("ticks_running");
-		outputSideIteration = nbt.getInteger("output_side_iteration");
-		outputSide = nbt.getString("output_side");
+		//outputSideIteration = nbt.getInteger("output_side_iteration");
+		//outputSide = nbt.getString("output_side");
 		if(worldObj==null||!worldObj.isRemote){
 			NBTTagList list = nbt.getTagList("Items", 10);
 			System.out.println("Got NBTTagList " + list);
@@ -154,6 +160,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	}	
 	///--END OF ENERGY STUFF--\\\
 	
+	/*///--START OF OUTPUT STUFF--\\\
 	public String outputSide = "None";
 	private int outputSideIteration = 0;
 	private String[] outputSides = {
@@ -174,6 +181,18 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		this.outputSide = outputSides[outputSideIteration];
 	}
 	
+	//public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
+	public void outputItems(ItemStack toOutput){
+		if(worldObj.isRemote)
+			return;
+		ForgeDirection outputSideDirection;
+		switch(outputSideIteration){
+		case 0:
+			outputSideDirection = ForgeDirection.UNKNOWN;
+		}
+	}
+	
+	///-END OF OUTPUT STUFF--\\\*/
 	///--PROCESSING--\\\
 	
 	public int ticks_running = 0;
@@ -185,9 +204,9 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		markForUpdate();
 		if(!worldObj.isRemote){
 			//System.out.println(this.outputSide);
-			if(outputSide!="None"){
-				System.out.println("Facing integer: " + facing());
-			}			
+			/*if(outputSide!="None"){
+				//System.out.println("Facing integer: " + facing());
+			}*/
 			
 			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null){
 				setActiveTexture(false);
@@ -380,7 +399,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 	}
 	
 	///--END OF INVENTORY STUFF--\\\
-	///--START OF DEBUG STUFF--\\\
+	/*///--START OF DEBUG STUFF--\\\
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side) {
@@ -393,7 +412,7 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IC
 		setActiveTexture(true);
 		return true;
 	}
-	///--END OF DEBUG STUFF--\\\
+	///--END OF DEBUG STUFF--\\\*/
 
 
 

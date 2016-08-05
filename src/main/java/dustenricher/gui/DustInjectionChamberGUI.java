@@ -63,24 +63,30 @@ public class DustInjectionChamberGUI extends GuiMekanism{
 		//guiElements.add(new GuiSlot(SlotType.POWER, this, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png"), 143, 56).with(SlotOverlay.PLUS));
 		//guiElements.add(new GuiUpgradeTab(this, tileEntity, MekanismUtils.getResource(ResourceType.GUI, "GuiMetallurgicInfuser.png")));
 	}
-	@Override
+	/*@Override
 	public void initGui(){
 		super.initGui();
-		this.buttonList.add(new GuiButton(0, this.width / 2 + 30, this.height / 2 -25, 40, 20, tileEntity.outputSide));
+		this.buttonList.add(new GuiButton(1, this.width / 2 + 30, this.height / 2 -25, 40, 20, tileEntity.outputSide));
 		//this.buttonList.add(new GuiButton(0, 50, 50, "Button"));
-	}
-	@Override
+	}*/
+	/*@Override
 	protected void actionPerformed(GuiButton button){
 		System.out.println("Action performed");
 		tileEntity.btn_changeOutputSide();
 		GuiScreen actualScreen = this.mc.currentScreen;
 		//this.mc.displayGuiScreen(null);
-		/*if(this.mc.currentScreen==null)
-			this.mc.setIng*/
 		this.mc.displayGuiScreen(actualScreen);
 		//this.mc.playerController.sendEnchantPacket(, p_78756_2_);
 		super.actionPerformed(button);
-	}
+	}*/
+	
+	/*@Override
+	protected void mouseClicked(int x, int y, int button){
+		super.mouseClicked(x, y, button);
+		System.out.println("Clicked on " + x + ":" + y + " with button ID of " + button);
+		int xAxis = (x-(width-xSize)/2);
+		int yAxis = (y-(height-ySize)/2);
+	}*/
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mouseX,int mouseY){
