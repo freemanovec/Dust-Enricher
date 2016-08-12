@@ -54,13 +54,7 @@ public class DustInjectionChamberContainer extends Container{
 			addSlotToContainer(new Slot(inventoryPlayer,i,8+i*18,142));
 		}
 	}
-	
-	/*@Override
-	public boolean enchantItem(EntityPlayer player, int action){
-		System.out.println("enchantItem called!");
-		
-		return true;
-	}*/
+
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slot){

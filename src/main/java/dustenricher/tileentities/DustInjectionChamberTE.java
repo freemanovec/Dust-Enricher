@@ -23,9 +23,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class DustInjectionChamberTE extends TileEntity implements IInventory, IStrictEnergyAcceptor{//, IConfigurable{
+public class DustInjectionChamberTE extends TileEntity implements IInventory, IStrictEnergyAcceptor, IConfigurable{
 	
 	private ItemStack[] inventory = new ItemStack[4];
 	public int facing(){
@@ -160,39 +161,63 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 	}	
 	///--END OF ENERGY STUFF--\\\
 	
-	/*///--START OF OUTPUT STUFF--\\\
-	public String outputSide = "None";
-	private int outputSideIteration = 0;
-	private String[] outputSides = {
-			"None",
-			"Left",
-			"Right",
-			"Front",
-			"Back",
-			"Top",
-			"Bottom"
-	};
-	public void btn_changeOutputSide(){
-		System.out.println("Received button signal");
-		outputSideIteration++;
-		if(outputSideIteration>6)
-			outputSideIteration = 0;
-		System.out.println("New face: " + outputSides[outputSideIteration]);
-		this.outputSide = outputSides[outputSideIteration];
-	}
-	
-	//public Map<TransmissionType, SideData> sideData = new HashMap<TransmissionType, SideData>();
-	public void outputItems(ItemStack toOutput){
-		if(worldObj.isRemote)
-			return;
-		ForgeDirection outputSideDirection;
-		switch(outputSideIteration){
+	///--START OF OUTPUT STUFF--\\\
+
+	public void debugPosition(){
+		System.out.println("TE Rotation -> " + facing());
+		System.out.println("TE Position -> " + getNiceCoords(xCoord, yCoord, zCoord));
+		String posLeft = "NONE BITCH";
+		String posRight = "NONE BITCH";
+		int[] input = {0,0,0};
+		int[] output = {0,0,0};
+		switch(facing()){
 		case 0:
-			outputSideDirection = ForgeDirection.UNKNOWN;
+			posLeft = getNiceCoords(xCoord+1,yCoord,zCoord);
+			posRight = getNiceCoords(xCoord-1,yCoord,zCoord);
+			input = new int[]{xCoord+1,yCoord,zCoord};
+			output = new int[]{xCoord-1,yCoord,zCoord};
+			break;
+		case 1:
+			posLeft = getNiceCoords(xCoord,yCoord,zCoord-1);
+			posRight = getNiceCoords(xCoord,yCoord,zCoord+1);
+			input = new int[]{xCoord,yCoord,zCoord-1};
+			output = new int[]{xCoord,yCoord,zCoord+1};
+			break;
+		case 2:
+			posLeft = getNiceCoords(xCoord-1,yCoord,zCoord);
+			posRight = getNiceCoords(xCoord+1,yCoord,zCoord);
+			input = new int[]{xCoord-1,yCoord,zCoord};
+			output = new int[]{xCoord+1,yCoord,zCoord};
+			break;
+		case 3:
+			posLeft = getNiceCoords(xCoord,yCoord,zCoord+1);
+			posRight = getNiceCoords(xCoord,yCoord,zCoord-1);
+			input = new int[]{xCoord,yCoord,zCoord+1};
+			output = new int[]{xCoord,yCoord,zCoord-1};
+			break;
 		}
+		
+		System.out.println("LC Position -> " + posLeft);
+		System.out.println("RC Position -> " + posRight);
+		
+		TileEntity te_input = worldObj.getTileEntity(input[0],input[1],input[2]);
+		TileEntity te_output = worldObj.getTileEntity(output[0], output[1], output[2]);
+		System.out.println("Left  TE -> " + te_input);
+		System.out.println("Right TE -> " + te_output);
+		
+	}
+	public String getNiceCoords(int x, int y, int z){
+		return "(" + x + ":" + y + ":" + z + ")";
 	}
 	
-	///-END OF OUTPUT STUFF--\\\*/
+	public boolean tryInputFromChest(TileEntityChest chest){
+		return true;
+	}
+	public boolean tryOutputToChest(TileEntityChest chest){
+		return true;
+	}
+
+	///-END OF OUTPUT STUFF--\\\
 	///--PROCESSING--\\\
 	
 	public int ticks_running = 0;
@@ -203,10 +228,34 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 	public void updateEntity(){
 		markForUpdate();
 		if(!worldObj.isRemote){
+			//debugPosition();
 			//System.out.println(this.outputSide);
 			/*if(outputSide!="None"){
 				//System.out.println("Facing integer: " + facing());
 			}*/
+			
+			int[] input_chest_pos = {0,0,0};
+			int[] output_chest_pos = {0,0,0};
+			switch(facing()){
+			case 0:
+				input_chest_pos = new int[]{xCoord+1,yCoord,zCoord};
+				output_chest_pos = new int[]{xCoord-1,yCoord,zCoord};
+				break;
+			case 1:
+				input_chest_pos = new int[]{xCoord,yCoord,zCoord-1};
+				output_chest_pos = new int[]{xCoord,yCoord,zCoord+1};
+				break;
+			case 2:
+				input_chest_pos = new int[]{xCoord-1,yCoord,zCoord};
+				output_chest_pos = new int[]{xCoord+1,yCoord,zCoord};
+				break;
+			case 3:
+				input_chest_pos = new int[]{xCoord,yCoord,zCoord+1};
+				output_chest_pos = new int[]{xCoord,yCoord,zCoord-1};
+				break;
+			}
+			TileEntity input_chest_te = worldObj.getTileEntity(input_chest_pos[0],input_chest_pos[1],input_chest_pos[2]);
+			TileEntity output_chest_te = worldObj.getTileEntity(output_chest_pos[0], output_chest_pos[1], output_chest_pos[2]);
 			
 			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null){
 				setActiveTexture(false);
@@ -399,20 +448,22 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 	}
 	
 	///--END OF INVENTORY STUFF--\\\
-	/*///--START OF DEBUG STUFF--\\\
+	///--START OF DEBUG STUFF--\\\
 
 	@Override
 	public boolean onSneakRightClick(EntityPlayer player, int side) {
-		setActiveTexture(false);
+		//setActiveTexture(false);
+		debugPosition();
 		return true;
 	}
 
 	@Override
 	public boolean onRightClick(EntityPlayer player, int side) {
-		setActiveTexture(true);
+		//setActiveTexture(true);
+		//debugPosition();
 		return true;
 	}
-	///--END OF DEBUG STUFF--\\\*/
+	///--END OF DEBUG STUFF--\\\
 
 
 
