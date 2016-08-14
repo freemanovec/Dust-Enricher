@@ -1,5 +1,6 @@
 package dustenricher.tileentities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,24 +173,30 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 		int[] output = {0,0,0};
 		switch(facing()){
 		case 0:
+			//BAD OFFSET
+			//INVERT OP
 			posLeft = getNiceCoords(xCoord+1,yCoord,zCoord);
 			posRight = getNiceCoords(xCoord-1,yCoord,zCoord);
 			input = new int[]{xCoord+1,yCoord,zCoord};
 			output = new int[]{xCoord-1,yCoord,zCoord};
 			break;
 		case 1:
+			//FINE
 			posLeft = getNiceCoords(xCoord,yCoord,zCoord-1);
 			posRight = getNiceCoords(xCoord,yCoord,zCoord+1);
 			input = new int[]{xCoord,yCoord,zCoord-1};
 			output = new int[]{xCoord,yCoord,zCoord+1};
 			break;
 		case 2:
+			//BAD OFFSET
+			//INVERT OP
 			posLeft = getNiceCoords(xCoord-1,yCoord,zCoord);
 			posRight = getNiceCoords(xCoord+1,yCoord,zCoord);
 			input = new int[]{xCoord-1,yCoord,zCoord};
 			output = new int[]{xCoord+1,yCoord,zCoord};
 			break;
 		case 3:
+			//FINE
 			posLeft = getNiceCoords(xCoord,yCoord,zCoord+1);
 			posRight = getNiceCoords(xCoord,yCoord,zCoord-1);
 			input = new int[]{xCoord,yCoord,zCoord+1};
@@ -209,12 +216,113 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 	public String getNiceCoords(int x, int y, int z){
 		return "(" + x + ":" + y + ":" + z + ")";
 	}
-	
-	public boolean tryInputFromChest(TileEntityChest chest){
-		return true;
+	public void listContentOfChest(TileEntityChest chest){
+		if(chest==null){
+			System.out.println("No chest to list!");
+			return;
+		}
+		for(int i = 0; i <chest.getSizeInventory(); i++){
+			System.out.println("#" + i + ": " + chest.getStackInSlot(i));
+		}
 	}
-	public boolean tryOutputToChest(TileEntityChest chest){
+	public boolean tryInputFromChest(TileEntityChest chest, ItemStack in_slot){
+		//System.out.println("Hook #-1");
+		if(chest==null)
+			return false;
+		if(in_slot != null && in_slot.stackSize >= 64)
+			return false;
+		boolean keep = true;
+		/*for(int iteration = 0; iteration < chest.getSizeInventory(); iteration++){
+			if(keep){
+				if(in_slot != null || compareItemStacks(in_slot, chest.getStackInSlot(iteration))){
+					System.out.println("Prev - " + chest.getStackInSlot(iteration));
+					chest.decrStackSize(iteration, 1);
+					System.out.println("Now  - " + chest.getStackInSlot(iteration));
+					
+					ItemStack toPut = slot_input.getStack();
+					if(toPut==null)
+						System.out.println("in_slot is null AND slot_input.getStack() is null? WTF?!");
+					toPut.stackSize += 1;
+					slot_input.putStack(toPut);
+					keep=false;
+				}else if(Recipes.isValidInput(chest.getStackInSlot(iteration))){
+					ItemStack toPut = chest.getStackInSlot(iteration);
+					toPut.stackSize = 1;
+					System.out.println("Prev - " + chest.getStackInSlot(iteration));
+					chest.decrStackSize(iteration, 1);
+					System.out.println("Now  - " + chest.getStackInSlot(iteration));
+					slot_input.putStack(toPut);
+					keep=false;
+				}
+			}
+		}*/
 		return true;
+		/*int we_can_get_at_max;
+		if(in_slot==null){
+			we_can_get_at_max = 64;
+		}else{
+			we_can_get_at_max = 64 - in_slot.stackSize;
+		}
+		if(in_slot != null && in_slot.stackSize>=64)
+			return null;
+
+		int we_gathered_so_far = 0; //this is how much we know well get from that chest
+									//we'll increment our input slot with this value
+		ItemStack content_of_input_slot = in_slot; //this is the ItemStack we have in out input slot in our DIC
+		ItemStack sample = null;
+		
+		System.out.println("Hook #0");
+	
+		for(int index = 0; index < chest.getSizeInventory(); index ++){ //here we iterate through every slot of the chest
+			System.out.println("Hook #1");
+			ItemStack content_of_iterated_slot_in_chest = chest.getStackInSlot(index); //this is the ItemStack we have on index in our chest
+			if(compareItemStacks(content_of_input_slot, content_of_iterated_slot_in_chest)||(content_of_input_slot==null&&Recipes.isValidInput(content_of_iterated_slot_in_chest))){ //we will proceed only if the item in the chest's slot is the same as in our DIC's input
+				System.out.println("Hook #2");
+				sample = content_of_iterated_slot_in_chest;
+				int how_much_we_will_take_from_this_slot = 0; //that is zero so far
+				int how_much_we_can_take_from_this_slot = we_can_get_at_max - we_gathered_so_far; //how much we can take without overflowing our input slot
+				int size_of_iterated_itemstack = content_of_iterated_slot_in_chest.stackSize; //how much this slot can give us
+				if(size_of_iterated_itemstack < how_much_we_can_take_from_this_slot){ //e.g. in chest will be 32 iron, but we can get 64 of it
+					System.out.println("Hook #3");
+					how_much_we_will_take_from_this_slot = size_of_iterated_itemstack; //we can take the whole slot
+				}else{
+					System.out.println("Hook #4");
+					how_much_we_will_take_from_this_slot = how_much_we_can_take_from_this_slot; //we can take just a part of this itemstack
+				}
+				System.out.println("Hook #5");
+				we_gathered_so_far += how_much_we_will_take_from_this_slot; //we increment it so we know how much to add to our DIC's input
+				chest.decrStackSize(index, how_much_we_will_take_from_this_slot); //we decrease the slot in chest
+			}
+		}
+		System.out.println("Hook #6");
+		//here we will return the ItemStack
+		if(in_slot==null && sample != null){
+			ItemStack toReturn = new ItemStack(sample.getItem(),we_gathered_so_far,sample.getItemDamage());
+			System.out.println("Hook #7");
+			return toReturn;
+		}else{
+			System.out.println("Hook #8");
+			if(in_slot==null){
+				System.out.println("Hook #9");
+				return null;
+			}
+			if(in_slot.getItem()==null)
+				System.out.println("Hook #10");
+			ItemStack toReturn = new ItemStack(in_slot.getItem(),in_slot.stackSize+we_gathered_so_far,in_slot.getItemDamage());
+			return toReturn;
+		}*/
+	}
+	public boolean tryOutputToChest(TileEntityChest chest, ItemStack in_slot){
+		if(chest==null)
+			return false;
+		return false;
+	}
+	public boolean compareItemStacks(ItemStack itemstackOne, ItemStack itemstackTwo){
+		if(itemstackOne==null||itemstackTwo==null)
+			return false;
+		if(itemstackOne.getItem()==itemstackTwo.getItem()&&itemstackOne.getItemDamage()==itemstackTwo.getItemDamage())
+			return true;
+		return false;
 	}
 
 	///-END OF OUTPUT STUFF--\\\
@@ -238,24 +346,43 @@ public class DustInjectionChamberTE extends TileEntity implements IInventory, IS
 			int[] output_chest_pos = {0,0,0};
 			switch(facing()){
 			case 0:
+				System.out.println("Case 0");
 				input_chest_pos = new int[]{xCoord+1,yCoord,zCoord};
 				output_chest_pos = new int[]{xCoord-1,yCoord,zCoord};
 				break;
 			case 1:
+				System.out.println("Case 1");
 				input_chest_pos = new int[]{xCoord,yCoord,zCoord-1};
 				output_chest_pos = new int[]{xCoord,yCoord,zCoord+1};
 				break;
 			case 2:
+				System.out.println("Case 2");
 				input_chest_pos = new int[]{xCoord-1,yCoord,zCoord};
 				output_chest_pos = new int[]{xCoord+1,yCoord,zCoord};
 				break;
 			case 3:
+				System.out.println("Case 3");
 				input_chest_pos = new int[]{xCoord,yCoord,zCoord+1};
 				output_chest_pos = new int[]{xCoord,yCoord,zCoord-1};
 				break;
 			}
-			TileEntity input_chest_te = worldObj.getTileEntity(input_chest_pos[0],input_chest_pos[1],input_chest_pos[2]);
-			TileEntity output_chest_te = worldObj.getTileEntity(output_chest_pos[0], output_chest_pos[1], output_chest_pos[2]);
+			TileEntityChest input_chest_te = (TileEntityChest) worldObj.getTileEntity(input_chest_pos[0],input_chest_pos[1],input_chest_pos[2]);
+			TileEntityChest output_chest_te = (TileEntityChest) worldObj.getTileEntity(output_chest_pos[0], output_chest_pos[1], output_chest_pos[2]);
+			if(slot_input != null){
+				//tryInputFromChest(input_chest_te, slot_input.getStack());
+				listContentOfChest(input_chest_te);
+				//listContentOfChest(output_chest_te);
+				/*if(slot_input.getHasStack())
+					tryInputFromChest(input_chest_te, slot_input.getStack());
+				else
+					tryInputFromChest(input_chest_te, null);*/
+				/*if(slot_input.getHasStack())
+					slot_input.putStack(tryInputFromChest(input_chest_te, slot_input.getStack()));
+				else
+					slot_input.putStack(tryInputFromChest(input_chest_te, null));
+				System.exit(1);*/
+			}
+			
 			
 			if(slot_input==null||slot_infuse==null||slot_output==null||slot_energy==null){
 				setActiveTexture(false);
